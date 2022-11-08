@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "incremental": true,
+    "target": "es2016",
+    "lib": [],
+    "module": "CommonJS",
+    "baseUrl": "./src",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "allowJs": true,
+    "removeComments": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "strictPropertyInitialization": false,
+    "strictNullChecks": false,
+    "skipLibCheck": true
+  },
+  "include": ["./src/index.ts"],
+  "exclude": ["node_modules", "**/*.spec.ts"],
+}
