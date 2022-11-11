@@ -1,8 +1,6 @@
-import { UserService } from './user.service';
-import { HttpRequest, HttpResponse, HttpRequestUtil } from '../../common/http';
-import { Controller } from '../../common/provider';
-import { CreateUserParams } from './user.models';
-import { HttpResponseUtil } from '../../common/http/http-response.util';
+import { HttpRequest, HttpResponse, HttpRequestUtil } from '../../../common/http';
+import { Controller } from '../../../common/provider';
+import { HttpResponseUtil } from '../../../common/http/http-response.util';
 
 export class UserController implements Controller {
   constructor(private userService: UserService) {

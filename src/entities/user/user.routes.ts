@@ -1,13 +1,9 @@
-import { UserController } from './user.controller';
-import { UserService } from './user.service';
-import { UserRepository } from './user.repository';
-import { Pool } from 'pg';
-import { Routes } from '../../common/server';
+import { Routes } from '../../common/http';
+import { UserProvider } from './user.provider';
+import { ProvidersManager } from '../../common/provider';
 
-export function getUserRoutes(connection: Pool): Routes {
-  const repository = new UserRepository(connection);
-  const service = new UserService(repository);
-  const controller = new UserController(service);
+export function getUserRoutes(): Routes {
+  const { controller } = ProvidersManager.get<UserProvider>(UserProvider);
 
   return [
     {
@@ -23,7 +19,7 @@ export function getUserRoutes(connection: Pool): Routes {
     {
       path: '/users/:id',
       method: 'GET',
-      handler: (req, res) => controller.findOne(req, res)
+      handler: (req, res, [id]) => controller.findOne(req, res, id)
     }
   ];
 }

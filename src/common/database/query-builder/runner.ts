@@ -1,4 +1,4 @@
-import { Connection } from '../database.model';
+import { DBConnection } from '../database.model';
 
 export abstract class Runner {
   // constructor(protected connection: Connection, protected table: string) {

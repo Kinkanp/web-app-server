@@ -11,25 +11,28 @@ export class AppServer {
 
   public create(): AppServer {
     this.server = http.createServer((req, res) => this.handleRequest(req, res));
-
     return this;
   }
 
-  public listen(): void {
-    this.server.listen(this.config.port, () => {
-      console.log(`Server is running on: http://localhost:${this.config.port}`);
+  public listen(): Promise<void> {
+    return new Promise((resolve) => {
+      this.server.listen(this.config.port, () => {
+        console.log(`Server is running on: http://localhost:${this.config.port}`);
+        resolve();
+      });
     });
   }
 
-  public setRoutes(routes: Routes): void {
+  public setRoutes(routes: Routes): this {
     this.routes = routes;
+    return this;
   }
 
   private handleRequest(req: HttpRequest, res: HttpResponse): void {
-    const { handler } = this.matchRoute(req);
+    const { handler, dynamicParams } = this.matchRoute(req);
 
     if (handler) {
-      handler(req, res);
+      handler(req, res, dynamicParams);
     } else {
       // TODO
       res.writeHead(404);

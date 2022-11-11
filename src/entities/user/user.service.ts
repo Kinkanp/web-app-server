@@ -1,7 +1,9 @@
 import { User } from './user.entity';
 import { UserRepository } from './user.repository';
+import { EntityService } from '../../common/provider';
+import { CreateUserParams } from './user.models';
 
-export class UserService {
+export class UserService implements EntityService {
   constructor(private userRepository: UserRepository) {
   }
 
@@ -9,9 +11,11 @@ export class UserService {
     return this.userRepository.list();
   }
 
-  public create(username: string): Promise<User> {
-    const user = new User(username);
+  public create(params: CreateUserParams): Promise<User> {
+    return this.userRepository.create(params);
+  }
 
-    return this.userRepository.create(user);
+  public findOne(id: number): Promise<User> {
+    return this.userRepository.findOne(id);
   }
 }

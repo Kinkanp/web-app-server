@@ -1,10 +1,9 @@
 import { getUserRoutes } from './entities/user/user.routes';
-import { Connection } from './common/database/database.model';
-import { Routes } from './common/server';
+import { Routes } from './common/http';
 
-export function getRoutes(connection: Connection): Routes {
+export function getRoutes(): Routes {
   // TODO: add base url
   return [
-    ...getUserRoutes(connection)
+    ...getUserRoutes()
   ];
 }

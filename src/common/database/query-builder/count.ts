@@ -1,9 +1,9 @@
-import { Connection } from '../database.model';
+import { DBConnection } from '../database.model';
 import { Runner } from './runner';
 
 export class Count implements Runner {
   constructor(
-    private connection: Connection,
+    private connection: DBConnection,
     private table: string,
     private readonly column = '*'
   ) {

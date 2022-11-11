@@ -1,4 +1,4 @@
-import { Connection } from '../database.model';
+import { DBConnection } from '../database.model';
 import { Runner } from './runner';
 
 enum LogicalOperator {
@@ -18,7 +18,7 @@ export class Select implements Runner {
   private fields: string;
   private whereConditions: RawWhereCondition[];
 
-  constructor(private connection: Connection, private table: string, fields: SelectFields) {
+  constructor(private connection: DBConnection, private table: string, fields: SelectFields) {
     this.setFields(fields);
   }
 

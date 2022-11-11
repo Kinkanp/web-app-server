@@ -1,4 +1,5 @@
-import { Pool } from 'pg';
+import { DBConnection } from './database.model';
+import { Sequelize } from 'sequelize';
 
 interface ConnectParams {
   host: string;
@@ -8,12 +9,14 @@ interface ConnectParams {
   port: number;
 }
 
-export const createConnection = (params: ConnectParams): Pool => {
-  return new Pool({
-    user: params.user,
+export const createConnection = (params: ConnectParams): DBConnection => {
+  return new Sequelize({
+    dialect: 'postgres',
+    username: params.user,
     host: params.host,
     database: params.name,
     password: params.password,
     port: params.port,
+    logging: () => {}
   });
 }

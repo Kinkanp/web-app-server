@@ -13,8 +13,9 @@
     "strict": true,
     "strictPropertyInitialization": false,
     "strictNullChecks": false,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "experimentalDecorators": true
   },
   "include": ["./src/index.ts"],
-  "exclude": ["node_modules", "**/*.spec.ts"],
+  "exclude": ["node_modules", "**/*.spec.ts"]
 }
