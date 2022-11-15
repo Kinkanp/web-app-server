@@ -1,4 +1,4 @@
-const { QueryBuilder } = require('./query-builder.ts');
+import { QueryBuilder } from './query-builder';
 
 describe('Query Builder', () => {
   const TABLE_NAME = 'test_table';

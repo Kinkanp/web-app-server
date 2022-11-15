@@ -17,6 +17,8 @@ export const createConnection = (params: ConnectParams): DBConnection => {
     database: params.name,
     password: params.password,
     port: params.port,
-    logging: () => {}
+    logging: () => {
+      // TODO
+    }
   });
 }

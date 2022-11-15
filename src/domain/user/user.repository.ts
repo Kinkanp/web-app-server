@@ -1,14 +1,14 @@
 import { User } from './user.entity';
 import { DBConnection } from '../../common/database';
-import { EntityRepository } from '../../common/provider';
 import { CreateUserParams } from './user.models';
+import { inject, injectable } from 'inversify';
+import { DB_CONNECTION } from '../../inversion';
+import { USER_SCHEMA, USER_TABLE_OPTIONS } from './user.schema';
 
-export class UserRepository implements EntityRepository {
-  constructor(private connection: DBConnection) {}
-
-  public async init(): Promise<void> {
-    User.setup(this.connection);
-    await User.sync();
+@injectable()
+export class UserRepository {
+  constructor(@inject(DB_CONNECTION) private connection: DBConnection) {
+    User.setupEntity(USER_SCHEMA, USER_TABLE_OPTIONS, connection);
   }
 
   public list(): Promise<User[]> {

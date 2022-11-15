@@ -5,8 +5,11 @@ type data = string[];
 const TYPES = {
   Repository: Symbol.for("Repository"),
   Service: Symbol.for("Service"),
-  Controller: Symbol.for("Controller")
+  Controller: Symbol.for("Controller"),
+  VALUE: Symbol.for('value')
 };
+
+const VALUE = 333;
 
 interface IRepository {
   getDataFromDB(): data;
@@ -22,6 +25,11 @@ interface IController {
 
 @injectable()
 class Repository implements IRepository {
+  constructor(
+    @inject(TYPES.VALUE) private value: number,
+  ) {
+  }
+
   getDataFromDB(): data {
     return ['test', 'test3', 'test5'];
   }
@@ -29,7 +37,9 @@ class Repository implements IRepository {
 
 @injectable()
 class Service implements IService {
-  constructor(@inject(TYPES.Repository) private repo: IRepository) {
+  constructor(
+    @inject(TYPES.Repository) private repo: IRepository,
+  ) {
   }
 
   getDataFromRepo(): data {
@@ -39,7 +49,9 @@ class Service implements IService {
 
 @injectable()
 class Controller implements IController {
-  constructor(@inject(TYPES.Service) private service: IService) {
+  constructor(
+    @inject(TYPES.Service) private service: IService,
+  ) {
   }
 
   getData(): data {
@@ -47,12 +59,19 @@ class Controller implements IController {
   }
 }
 
-const container = new Container();
+const globalContainer = new Container();
 
-container.bind<IRepository>(TYPES.Repository).to(Repository);
-container.bind<IService>(TYPES.Service).to(Service);
-container.bind<IController>(TYPES.Controller).to(Controller);
+globalContainer.bind<number>(TYPES.VALUE).toConstantValue(VALUE);
 
-const controller = container.get<IController>(TYPES.Controller);
+// const container = new Container();
+//
+// container.bind<IRepository>(TYPES.Repository).to(Repository);
+// container.bind<IService>(TYPES.Service).to(Service);
+// container.bind<IController>(TYPES.Controller).to(Controller);
+// container.parent = globalContainer;
+// const controller = container.get<IController>(TYPES.Controller);
+// console.log(controller.getData());
 
-console.log(controller.getData());
+const container2 = new Container();
+
+container2.parent = globalContainer;

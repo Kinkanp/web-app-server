@@ -1,11 +1,9 @@
-import { UserService } from './user.service';
-import { HttpRequest, HttpResponse, HttpRequestUtil } from '../../common/http';
-import { Controller } from '../../common/provider';
-import { CreateUserParams } from './user.models';
-import { HttpResponseUtil } from '../../common/http/http-response.util';
+import { CreateUserParams } from 'aggregation/users';
+import { HttpRequest, HttpResponse, HttpRequestUtil, HttpResponseUtil } from '../../core';
+import { UserServiceModel } from './user-service.model';
 
-export class UserController implements Controller {
-  constructor(private userService: UserService) {
+export class UserController {
+  constructor(private userService: UserServiceModel) {
   }
 
   public async create(req: HttpRequest, res: HttpResponse): Promise<void> {

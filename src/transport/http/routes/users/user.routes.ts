@@ -1,9 +1,9 @@
-import { Routes } from '../../common/http';
-import { UserProvider } from './user.provider';
-import { ProvidersManager } from '../../common/provider';
+import { Routes } from '../../core';
+import { UsersAggregator } from '../../../../aggregation/users';
+import { UserController } from './user.controller';
 
 export function getUserRoutes(): Routes {
-  const { controller } = ProvidersManager.get<UserProvider>(UserProvider);
+  const controller = new UserController(UsersAggregator.service);
 
   return [
     {

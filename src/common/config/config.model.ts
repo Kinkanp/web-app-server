@@ -1,4 +1,4 @@
-export interface Config {
+export interface AppConfig {
     database: {
         host: string;
         user: string;
@@ -8,9 +8,6 @@ export interface Config {
     },
     app: {
         port: number;
+        baseUrl: string;
     }
-}
-
-export interface AppConfigModel {
-    get(): Config;
 }

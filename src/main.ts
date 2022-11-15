@@ -1,17 +1,17 @@
-import { AppConfig } from './common/config';
+import { getAppConfig } from './common/config';
 import { createConnection } from './common/database';
-import { AppServer } from './common/http';
-import { getRoutes } from './app.routes';
-import { ProvidersManager } from './common/provider';
-import { getAppProviders } from './app.providers';
+import { HttpServer } from './transport/http/core';
+import { AppContainer } from './inversion';
+import { HttpRoutes } from './transport/http/routes/routes';
 
 const main = async () => {
-  const config = new AppConfig().get();
+  const config = getAppConfig();
   const connection = createConnection(config.database);
-  const server = new AppServer({ port: config.app.port });
 
-  await ProvidersManager.set(getAppProviders()).init(connection);
-  await server.setRoutes(getRoutes()).create().listen();
+  AppContainer.set(connection, config);
+
+  const httpServer = new HttpServer({ port: config.app.port, baseUrl: config.app.baseUrl });
+  await httpServer.setRoutes(HttpRoutes.get()).create().listen();
 };
 
 main();

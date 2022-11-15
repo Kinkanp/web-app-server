@@ -4,12 +4,15 @@ import { BrandedKeysOf, UniqueSymbol } from './database-model.utils';
 
 export class DBConnection extends Sequelize {}
 
+export type EntityAttributes<MS extends ModelStatic<Model>, M extends InstanceType<MS>> = ModelAttributes<M, Optional<Attributes<M>, BrandedKeysOf<Attributes<M>, typeof UniqueSymbol>>>
+
 export class EntityModel<TModelAttributes, TCreationAttributes> extends Model<TModelAttributes, TCreationAttributes> {
   public static setupEntity<MS extends ModelStatic<Model>, M extends InstanceType<MS>>(
-    attributes: ModelAttributes<M, Optional<Attributes<M>, BrandedKeysOf<Attributes<M>, typeof UniqueSymbol>>>,
-    options: ModelOptions & { connection: Sequelize }
+    attributes: EntityAttributes<MS, M>,
+    options: ModelOptions,
+    sequelize: Sequelize
   ): void {
-    EntityModel.init(attributes, { ...options, sequelize: options.connection });
+    EntityModel.init(attributes, { ...options, sequelize });
   }
 }
 

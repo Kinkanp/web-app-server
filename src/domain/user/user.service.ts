@@ -1,17 +1,18 @@
 import { User } from './user.entity';
 import { UserRepository } from './user.repository';
-import { EntityService } from '../../common/provider';
 import { CreateUserParams } from './user.models';
+import { inject, injectable } from 'inversify';
 
-export class UserService implements EntityService {
-  constructor(private userRepository: UserRepository) {
+@injectable()
+export class UserService {
+  constructor(@inject(UserRepository) private userRepository: UserRepository) {
   }
 
   public list(): Promise<User[]> {
     return this.userRepository.list();
   }
 
-  public create(params: CreateUserParams): Promise<User> {
+  public create(params: Required<CreateUserParams>): Promise<User> {
     return this.userRepository.create(params);
   }
 

@@ -9,10 +9,4 @@ export class HttpResponseUtil {
 
     return this;
   }
-
-  public ok(res: HttpResponse): this {
-    res.statusCode = 200;
-
-    return this;
-  }
 }

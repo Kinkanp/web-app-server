@@ -1,7 +1,8 @@
 import * as http from 'http';
 
-export interface AppServerConfig {
+export interface HttpServerConfig {
   port: number;
+  baseUrl: string;
 }
 
 export type HttpRequest = http.IncomingMessage;
