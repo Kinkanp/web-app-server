@@ -8,4 +8,10 @@ export interface Route {
 
 export type Routes = Route[];
 
-export type RouteHandler = (req: HttpRequest, res: HttpResponse, params?: string[]) => Promise<void>;
+export type RouteHandler = (req: HttpRequest, res: HttpResponse, params?: RouteDynamicParams) => Promise<RouteHandlerResponse>;
+
+export type RouteHandlerResponse = Response | void;
+
+export type RouteDynamicParams = string[];
+
+type Response = Array<unknown> | Record<any, any> | string | number;

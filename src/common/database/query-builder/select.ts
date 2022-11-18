@@ -28,22 +28,6 @@ export class Select implements Runner {
     return this;
   }
 
-  groupBy() {
-    // Todo: implement
-  }
-
-  limit() {
-    // Todo: implement
-  }
-
-  offset() {
-    // Todo: implement
-  }
-
-  having() {
-    // Todo: implement
-  }
-
   public async run() {
     try {
       const [query, values] = this.construct();

@@ -18,7 +18,6 @@ export class Count implements Runner {
 
       return parseInt(row.count, 10);
     } catch (e) {
-      // TODO: handle error
       console.error('Count query error', e);
     }
   }

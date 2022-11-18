@@ -1,8 +1,9 @@
 import { getAppConfig } from './common/config';
 import { createConnection } from './common/database';
 import { HttpServer } from './transport/http/core';
+import { HttpRoutes } from './transport/http/routes';
 import { AppContainer } from './inversion';
-import { HttpRoutes } from './transport/http/routes/routes';
+import { httpExceptionHandler } from './transport/http/errors';
 
 const main = async () => {
   const config = getAppConfig();
@@ -10,8 +11,11 @@ const main = async () => {
 
   AppContainer.set(connection, config);
 
-  const httpServer = new HttpServer({ port: config.app.port, baseUrl: config.app.baseUrl });
-  await httpServer.setRoutes(HttpRoutes.get()).create().listen();
+  await new HttpServer({ port: config.app.port, baseUrl: config.app.baseUrl })
+    .setRoutes(HttpRoutes.get())
+    .setExceptionHandler(httpExceptionHandler)
+    .create()
+    .listen();
 };
 
 main();

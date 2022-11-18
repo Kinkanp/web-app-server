@@ -7,6 +7,7 @@ export class HttpRouting {
     this.setBaseUrl();
   }
 
+  // TODO: add condition for '*' route
   public match(req: HttpRequest): { handler?: RouteHandler; dynamicParams: string[] } {
     const reqUrlParts = req.url?.split('/');
     const dynamicParams: string[] = [];

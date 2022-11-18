@@ -9,12 +9,17 @@ export function getUserRoutes(): Routes {
     {
       path: '/users',
       method: 'POST',
-      handler: (req, res) => controller.create(req, res)
+      handler: (req) => controller.create(req)
     },
     {
       path: '/users',
       method: 'GET',
-      handler: (req, res) => controller.list(req, res)
+      handler: (req) => controller.list(req)
+    },
+    {
+      path: '/users/test',
+      method: 'GET',
+      handler: (req, res) => controller.test(req, res)
     },
     {
       path: '/users/:id',

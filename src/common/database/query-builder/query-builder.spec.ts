@@ -1,6 +1,6 @@
 import { QueryBuilder } from './query-builder';
 
-describe('Query Builder', () => {
+xdescribe('Query Builder', () => {
   const TABLE_NAME = 'test_table';
 
   describe('count', () => {

@@ -4,16 +4,17 @@ interface ILogger {
   warning(): void;
 }
 
-export class Logger implements ILogger{
+// TODO
+export class Logger implements ILogger {
   public error(): void {
-    // TODO
+    //
   }
 
   public warning(): void {
-    // TODO
+    //
   }
 
   public info(): void {
-    // TODO
+    //
   }
 }
