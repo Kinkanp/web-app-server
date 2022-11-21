@@ -8,7 +8,7 @@ export interface Route {
 
 export type Routes = Route[];
 
-export type RouteHandler = (req: HttpRequest, res: HttpResponse, params?: RouteDynamicParams) => Promise<RouteHandlerResponse>;
+export type RouteHandler = (req: HttpRequest, res: HttpResponse, params: RouteDynamicParams) => Promise<RouteHandlerResponse>;
 
 export type RouteHandlerResponse = Response | void;
 

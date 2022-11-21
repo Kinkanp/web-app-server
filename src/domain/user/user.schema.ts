@@ -16,7 +16,6 @@ export const USER_SCHEMA = {
   }
 };
 
-
 export const USER_TABLE_OPTIONS = {
   modelName: 'User',
   tableName: 'users',

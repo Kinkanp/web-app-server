@@ -26,9 +26,9 @@ export class HttpResponseUtil {
     return this;
   }
 
-  private formatData(data: unknown): string | number {
+  private formatData(data: unknown): string | number | null {
     if (!data) {
-      return undefined;
+      return null;
     }
 
     if (typeof data === 'string' || typeof data === 'number') {

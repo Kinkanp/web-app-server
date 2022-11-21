@@ -7,6 +7,13 @@ export function getUserRoutes(): Routes {
 
   return [
     {
+      path: '/health',
+      method: 'GET',
+      handler: async (req, res) => {
+        res.end('Health');
+      }
+    },
+    {
       path: '/users',
       method: 'POST',
       handler: (req) => controller.create(req)

@@ -12,7 +12,7 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "strictPropertyInitialization": false,
-    "strictNullChecks": false,
+    "strictNullChecks": true,
     "skipLibCheck": true,
     "experimentalDecorators": true
   },

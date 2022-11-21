@@ -1,10 +1,10 @@
 import { CommonHttpResponse } from './common-response';
-import { ErrorResponseModel } from './response.model';
+import { ErrorResponseModel, ResponseErrorMessage } from './response.model';
 
 export class CommonErrorResponse<TCode extends number> extends CommonHttpResponse<TCode>{
-  protected _message: string;
+  protected _message: ResponseErrorMessage;
 
-  public message(message: string): this {
+  public message(message: ResponseErrorMessage): this {
     this._message = message;
 
     return this;

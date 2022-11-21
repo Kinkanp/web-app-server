@@ -1,20 +1,32 @@
-interface ILogger {
-  info(): void;
-  error(): void;
-  warning(): void;
+import { injectable } from 'inversify';
+
+export interface ILogger {
+  info(message: string): void;
+  error(message: string): void;
+  warning(message: string): void;
 }
 
-// TODO
+@injectable()
 export class Logger implements ILogger {
-  public error(): void {
-    //
+  public error(message: string): void {
+    if (this.canLog()) {
+      console.log(`Error: ${message}`)
+    }
   }
 
-  public warning(): void {
-    //
+  public warning(message: string): void {
+    if (this.canLog()) {
+      console.log(`Warn: ${message}`)
+    }
   }
 
-  public info(): void {
-    //
+  public info(message: string): void {
+    if (this.canLog()) {
+      console.log(`info: ${message}`)
+    }
+  }
+
+  private canLog(): boolean {
+    return false;
   }
 }

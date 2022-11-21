@@ -23,7 +23,7 @@ export class UserRepository {
     return User.create(params);
   }
 
-  public findOne(id: number): Promise<User> {
+  public findOne(id: number): Promise<User | null> {
     return User.findByPk(id);
   }
 }

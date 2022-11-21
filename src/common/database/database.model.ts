@@ -6,7 +6,7 @@ export class DBConnection extends Sequelize {}
 
 export type EntityAttributes<MS extends ModelStatic<Model>, M extends InstanceType<MS>> = ModelAttributes<M, Optional<Attributes<M>, BrandedKeysOf<Attributes<M>, typeof UniqueSymbol>>>
 
-export class EntityModel<TModelAttributes, TCreationAttributes> extends Model<TModelAttributes, TCreationAttributes> {
+export class EntityModel<TModelAttributes extends {}, TCreationAttributes extends {} = TModelAttributes> extends Model<TModelAttributes, TCreationAttributes> {
   public static setupEntity<MS extends ModelStatic<Model>, M extends InstanceType<MS>>(
     attributes: EntityAttributes<MS, M>,
     options: ModelOptions,

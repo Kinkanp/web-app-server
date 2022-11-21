@@ -8,5 +8,7 @@ export interface ErrorResponseModel {
 
 export interface ResponseError {
   code: number;
-  message: string;
+  message: ResponseErrorMessage;
 }
+
+export type ResponseErrorMessage = string | string[];

@@ -7,9 +7,15 @@ import { ClientErrorResponse, InternalErrorResponse, SuccessResponse } from './r
 export class HttpServer {
   private server: http.Server;
   private routing: HttpRouting;
-  private exceptionHandler: CustomErrorHandler = () => { throw ''};
+  private exceptionHandler: CustomErrorHandler = () => {
+    throw '';
+  };
 
   constructor(private config: HttpServerConfig) {}
+
+  public get(): http.Server {
+    return this.server;
+  }
 
   public create(): HttpServer {
     this.server = http.createServer((req, res) => this.handleRequest(req, res));
@@ -17,12 +23,16 @@ export class HttpServer {
     return this;
   }
 
-  public listen(): Promise<void> {
+  public close(): Promise<void> {
     return new Promise(resolve => {
-      this.server.listen(this.config.port, () => {
-        console.log(`Server is running on: http://localhost:${this.config.port}`);
-        resolve();
-      });
+      this.server.close(() => resolve());
+    });
+  }
+
+  public listen(): void {
+    this.server.listen(this.config.port, () => {
+      // TODO: set domain instead of localhost
+      console.log(`Server is running on: http://localhost:${this.config.port}`);
     });
   }
 

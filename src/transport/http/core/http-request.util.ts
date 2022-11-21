@@ -20,8 +20,8 @@ export class HttpRequestUtil {
     });
   }
 
-  public getQueryParams(params: string | string[]): string | string[] {
-    const searchParams = new URL(this.req.url, `https://${this.req.headers.host}`).searchParams;
+  public getQueryParams(params: string | string[]): (string | null) | (string | null)[] {
+    const searchParams = new URL(this.req.url as string, `https://${this.req.headers.host}`).searchParams;
 
     if (typeof params === 'string') {
       return searchParams.get(params);
