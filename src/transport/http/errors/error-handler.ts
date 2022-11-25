@@ -7,14 +7,13 @@ import {
   UnauthorizedError,
   UnprocessableEntityError
 } from '../../../common/errors';
-import { HttpResponse } from '../core';
+import { ExceptionHandler, HttpResponse } from '../core';
 import { DatabaseError } from '../../../common/database';
 import { inject, injectable } from 'inversify';
-import { LOGGER } from '../../../inversion';
-import { ILogger } from '../../../common/logger';
+import { ILogger, LOGGER } from '../../../common/logger';
 
 @injectable()
-export class HttpExceptionHandler {
+export class HttpExceptionHandler implements ExceptionHandler {
   constructor(@inject(LOGGER) private logger: ILogger) {}
 
   public handle(res: HttpResponse, error: BaseError): void {
@@ -49,32 +48,3 @@ export class HttpExceptionHandler {
     }
   }
 }
-
-// export function httpExceptionHandler(res: HttpResponse, error: BaseError): void {
-//   if (error instanceof DatabaseError) {
-//     return new InternalErrorResponse(res).status(500).message('Server database error').send();
-//   }
-//
-//   const clientErrorCode = getClientErrorCode(error);
-//
-//   if (clientErrorCode) {
-//     return new ClientErrorResponse(res).status(clientErrorCode).message(error.message).send();
-//   }
-//
-//   return new InternalErrorResponse(res).status(500).message(error.message).send();
-// }
-//
-// function getClientErrorCode(error: BaseError) {
-//   switch (error.constructor) {
-//     case ForbiddenError:
-//       return 403;
-//     case UnauthorizedError:
-//       return 401;
-//     case InvalidParamsError:
-//       return 400;
-//     case UnprocessableEntityError:
-//       return 422;
-//     case NotFoundError:
-//       return 404;
-//   }
-// }

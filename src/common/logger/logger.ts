@@ -1,5 +1,7 @@
 import { injectable } from 'inversify';
 
+export const LOGGER = Symbol('App logger');
+
 export interface ILogger {
   info(message: string): void;
   error(message: string): void;
@@ -10,7 +12,7 @@ export interface ILogger {
 export class Logger implements ILogger {
   public error(message: string): void {
     if (this.canLog()) {
-      console.log(`Error: ${message}`)
+      console.error(`Error: ${message}`)
     }
   }
 
@@ -22,11 +24,12 @@ export class Logger implements ILogger {
 
   public info(message: string): void {
     if (this.canLog()) {
-      console.log(`info: ${message}`)
+      console.log(`Info: ${message}`)
     }
   }
 
+  // TODO: provide from env
   private canLog(): boolean {
-    return false;
+    return true;
   }
 }

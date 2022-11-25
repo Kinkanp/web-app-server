@@ -1,17 +1,24 @@
 import * as http from 'http';
-import { HttpServerConfig, HttpRequest, HttpResponse, CustomErrorHandler } from './server.model';
+import { inject, injectable } from 'inversify';
+import { HttpServerConfig, HttpRequest, HttpResponse, ExceptionHandler } from './server.model';
 import { RouteDynamicParams, RouteHandler, Routes } from './routing/routing.model';
 import { HttpRouting } from './routing/routing';
 import { ClientErrorResponse, InternalErrorResponse, SuccessResponse } from './responses';
+import { ILogger, LOGGER } from '../../../common/logger';
+import { HTTP_EXCEPTION_HANDLER, HTTP_SERVER_CONFIG } from './inversion';
 
+@injectable()
 export class HttpServer {
+  private randomText = Math.random();
   private server: http.Server;
   private routing: HttpRouting;
-  private exceptionHandler: CustomErrorHandler = () => {
-    throw '';
-  };
 
-  constructor(private config: HttpServerConfig) {}
+  constructor(
+    @inject(HTTP_EXCEPTION_HANDLER) private exceptionHandler: ExceptionHandler,
+    @inject(HTTP_SERVER_CONFIG) private config: HttpServerConfig,
+    @inject(LOGGER) private logger: ILogger
+  ) {
+  }
 
   public get(): http.Server {
     return this.server;
@@ -30,20 +37,15 @@ export class HttpServer {
   }
 
   public listen(): void {
+    console.log('listening', this.config);
     this.server.listen(this.config.port, () => {
       // TODO: set domain instead of localhost
-      console.log(`Server is running on: http://localhost:${this.config.port}`);
+      this.logger.info(`Server is running on: http://localhost:${this.config.port}`);
     });
   }
 
   public setRoutes(routes: Routes): this {
     this.routing = new HttpRouting(routes, this.config.baseUrl);
-
-    return this;
-  }
-
-  public setExceptionHandler(handler: CustomErrorHandler): this {
-    this.exceptionHandler = handler;
 
     return this;
   }
@@ -76,10 +78,18 @@ export class HttpServer {
   }
 
   private handleRouteError(res: HttpResponse, error: Error): void {
-    try {
-      this.exceptionHandler(res, error);
-    } catch {
-      new InternalErrorResponse(res).status(500).send();
+    if (!this.exceptionHandler) {
+      this.throwInternalError(res);
     }
+
+    try {
+      this.exceptionHandler.handle(res, error);
+    } catch {
+      this.throwInternalError(res);
+    }
+  }
+
+  private throwInternalError(res: HttpResponse): void {
+    new InternalErrorResponse(res).status(500).send();
   }
 }

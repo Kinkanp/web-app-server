@@ -1,5 +1,5 @@
 import * as http from 'http';
-import { CommonErrorResponse } from './responses/common/error-response';
+import { BaseError } from '../../../common/errors';
 
 export interface HttpServerConfig {
   port: number;
@@ -9,4 +9,6 @@ export interface HttpServerConfig {
 export type HttpRequest = http.IncomingMessage;
 export type HttpResponse = http.ServerResponse;
 
-export type CustomErrorHandler = (res: HttpResponse, error: Error) => CommonErrorResponse<number> | void;
+export abstract class ExceptionHandler {
+  abstract handle(res: HttpResponse, error: BaseError): void;
+}

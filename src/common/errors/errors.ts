@@ -18,7 +18,6 @@ export class ForbiddenError extends BaseError {
   }
 }
 
-
 export class UnauthorizedError extends BaseError {
   constructor() {
     super('Unauthorized');

@@ -5,8 +5,7 @@ import { inject, injectable } from 'inversify';
 import { InvalidParamsError, NotFoundError } from '../../common/errors';
 import { Validator } from '../../common/validation';
 import { UserValidationSchemas } from './user-validation.schemas';
-import { LOGGER } from '../../inversion';
-import { ILogger } from '../../common/logger';
+import { ILogger, LOGGER } from '../../common/logger';
 
 @injectable()
 export class UserService {

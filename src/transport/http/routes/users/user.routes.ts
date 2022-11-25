@@ -1,9 +1,9 @@
 import { Routes } from '../../core';
-import { UsersAggregator } from '../../../../aggregation/users';
+import { UsersModule } from '../../../../aggregation/users';
 import { UserController } from './user.controller';
 
 export function getUserRoutes(): Routes {
-  const controller = new UserController(UsersAggregator.service);
+  const controller = new UserController(UsersModule.service);
 
   return [
     {

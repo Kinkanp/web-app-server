@@ -1,8 +1,7 @@
 import { User } from './user.entity';
-import { DBConnection } from '../../common/database';
+import { DB_CONNECTION, DBConnection } from '../../common/database';
 import { CreateUserParams } from './user.models';
 import { inject, injectable } from 'inversify';
-import { DB_CONNECTION } from '../../inversion';
 import { USER_SCHEMA, USER_TABLE_OPTIONS } from './user.schema';
 
 @injectable()

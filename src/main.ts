@@ -1,33 +1,26 @@
-import { getAppConfig } from './common/config';
-import { createConnection } from './common/database';
-import { HttpServer } from './transport/http/core';
+import 'reflect-metadata';
 import { HttpRoutes } from './transport/http/routes';
-import { APP_CONFIG, AppContainer, DB_CONNECTION, HTTP_EXCEPTION_HANDLER, LOGGER } from './inversion';
-import { HttpExceptionHandler } from './transport/http/errors';
-import { Logger } from './common/logger';
+import { AppModule } from './ioc';
+import { HttpModule } from './transport/http';
+import { UsersModule } from './aggregation/users';
+import { DatabaseModule } from './common/database';
+import { ConfigModule } from './common/config';
+import { LoggerModule } from './common/logger';
 
-const main = (): { httpServer: HttpServer, closeConnection: () => Promise<void> } => {
-  const config = getAppConfig();
-  const connection = createConnection(config.database);
+export class App {
+  static {
+    AppModule.register([
+      LoggerModule,
+      ConfigModule,
+      DatabaseModule,
+      HttpModule,
+      UsersModule
+    ]);
 
-  AppContainer
-    .setProvider(LOGGER, Logger)
-    .setProvider(HTTP_EXCEPTION_HANDLER, HttpExceptionHandler)
-    .setConstant(DB_CONNECTION, connection)
-    .setConstant(APP_CONFIG, config);
+    HttpModule.getServer().setRoutes(HttpRoutes.get()).create().listen();
+  }
 
-  // test
-  const errHandler = AppContainer.get<HttpExceptionHandler>(HTTP_EXCEPTION_HANDLER);
-
-  const httpServer = new HttpServer({ port: config.app.port, baseUrl: config.app.baseUrl });
-
-  httpServer
-    .setRoutes(HttpRoutes.get())
-    .setExceptionHandler((res, err) => errHandler.handle(res, err))
-    .create()
-    .listen();
-
-  return { httpServer, closeConnection: () => connection.close() };
-};
-
-export default main();
+  static shutdown(): Promise<void[]> {
+    return Promise.all([HttpModule.getServer().close(), DatabaseModule.getConnection().close()]);
+  }
+}

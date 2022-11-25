@@ -6,23 +6,23 @@ type FormattedValidationError = null | string[];
 export class Validator {
   private static ajv: Ajv;
 
-  public static registerSchema<TSchema>(schema: JSONSchemaType<TSchema>, key: string): void {
+  static {
+    Validator.ajv = new Ajv({ allErrors: true });
+
+    AjvErrors(Validator.ajv);
+  }
+
+  static registerSchema<TSchema>(schema: JSONSchemaType<TSchema>, key: string): void {
     this.ajv.addSchema(schema, key);
     this.ajv.compile(schema);
   }
 
-  public static validate(key: string, data: unknown): FormattedValidationError {
+  static validate(key: string, data: unknown): FormattedValidationError {
     const validate = Validator.ajv.getSchema(key) as ValidateFunction;
 
     validate(data);
 
     return Validator.formatErrors(validate.errors);
-  }
-
-  public static init(): void {
-    Validator.ajv = new Ajv({ allErrors: true });
-
-    AjvErrors(Validator.ajv);
   }
 
   private static formatErrors(errors?: ErrorObject[] | null): FormattedValidationError {
@@ -36,5 +36,3 @@ export class Validator {
     });
   }
 }
-
-Validator.init();
