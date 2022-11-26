@@ -1,0 +1,11 @@
+{
+  "execMap": {
+    "ts": "node -r ts-node/register"
+  },
+  "watch": ["src"],
+  "ignore": ["*.spec.ts"],
+  "env": {
+    "NODE_ENV": "development"
+  },
+  "ext": "js,json,ts"
+}

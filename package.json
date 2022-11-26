@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon --exec ts-node ./src/main.ts ./src",
+    "start": "nodemon --config nodemon.json ./src/main.ts",
+    "inspect": "nodemon --config nodemon.json --inspect ./src/main.ts",
     "build": "ts-node ./src/main.ts",
     "lint": "eslint -c .eslintrc.json src/*",
-    "test": "jest",
+    "test": "jest --findRelatedTests ./src/**/*",
     "test:e2e": "jest --findRelatedTests ./tests/**/* --setupFilesAfterEnv ./tests/setup.ts"
   },
   "keywords": [],

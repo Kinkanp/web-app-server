@@ -11,7 +11,7 @@ export class IAppModule {
     return [];
   }
 
-  static get(): Container {
+  static getContainer(): Container {
     return this.container;
   }
 }

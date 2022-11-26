@@ -1,6 +1,6 @@
 import { Container } from 'inversify';
 import { createConnection } from './database-connection';
-import { APP_CONFIG, AppConfig, ConfigModule } from '../config';
+import { ConfigModule } from '../config';
 import { IAppModule } from '../../ioc';
 import { DBConnection } from './database.model';
 
@@ -14,7 +14,7 @@ export class DatabaseModule extends IAppModule {
   static register(container: Container): void {
     this.container = container;
 
-    const config = container.get<AppConfig>(APP_CONFIG);
+    const config = ConfigModule.get();
     const connection = createConnection(config.database);
 
     this.container.bind(DB_CONNECTION).toConstantValue(connection);

@@ -9,7 +9,6 @@ import { HTTP_EXCEPTION_HANDLER, HTTP_SERVER_CONFIG } from './inversion';
 
 @injectable()
 export class HttpServer {
-  private randomText = Math.random();
   private server: http.Server;
   private routing: HttpRouting;
 
@@ -37,7 +36,6 @@ export class HttpServer {
   }
 
   public listen(): void {
-    console.log('listening', this.config);
     this.server.listen(this.config.port, () => {
       // TODO: set domain instead of localhost
       this.logger.info(`Server is running on: http://localhost:${this.config.port}`);
