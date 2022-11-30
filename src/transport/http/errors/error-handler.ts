@@ -8,7 +8,7 @@ import {
   UnprocessableEntityError
 } from '../../../common/errors';
 import { ExceptionHandler, HttpResponse } from '../core';
-import { DatabaseError } from '../../../common/database';
+import { isDatabaseError } from '../../../common/database';
 import { inject, injectable } from 'inversify';
 import { ILogger, LOGGER } from '../../../common/logger';
 
@@ -16,20 +16,20 @@ import { ILogger, LOGGER } from '../../../common/logger';
 export class HttpExceptionHandler implements ExceptionHandler {
   constructor(@inject(LOGGER) private logger: ILogger) {}
 
-  public handle(res: HttpResponse, error: BaseError): void {
-    if (error instanceof DatabaseError) {
-      this.logger.error(`Database error 500: ${error.message}`);
+  public handle(res: HttpResponse, error: BaseError | Error): void {
+    if (isDatabaseError(error as Error)) {
+      this.logger.error(`Database error (500): ${error.message}`);
       return new InternalErrorResponse(res).status(500).message('Server database error').send();
     }
 
     const clientErrorCode = this.getClientErrorCode(error);
 
     if (clientErrorCode) {
-      this.logger.info(`Client error 400: ${error.message}`);
+      this.logger.info(`Client error (400): ${error.message}`);
       return new ClientErrorResponse(res).status(clientErrorCode).message(error.message).send();
     }
 
-    this.logger.error(`Uncaught error 500: ${error.message}`);
+    this.logger.error(`Uncaught error (500): ${error.message}`);
     return new InternalErrorResponse(res).status(500).message(error.message).send();
   }
 

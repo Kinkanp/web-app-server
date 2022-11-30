@@ -15,7 +15,7 @@ export class DatabaseModule extends IAppModule {
     this.container = container;
 
     const config = ConfigModule.get();
-    const connection = createConnection(config.database);
+    const connection = createConnection(config.environment.isDev);
 
     this.container.bind(DB_CONNECTION).toConstantValue(connection);
   }

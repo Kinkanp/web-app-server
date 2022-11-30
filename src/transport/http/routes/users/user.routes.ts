@@ -7,13 +7,6 @@ export function getUserRoutes(): Routes {
 
   return [
     {
-      path: '/health',
-      method: 'GET',
-      handler: async (req, res) => {
-        res.end('Health');
-      }
-    },
-    {
       path: '/users',
       method: 'POST',
       handler: (req) => controller.create(req)
@@ -22,11 +15,6 @@ export function getUserRoutes(): Routes {
       path: '/users',
       method: 'GET',
       handler: (req) => controller.list(req)
-    },
-    {
-      path: '/users/test',
-      method: 'GET',
-      handler: (req, res) => controller.test(req, res)
     },
     {
       path: '/users/:id',

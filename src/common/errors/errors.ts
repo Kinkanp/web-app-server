@@ -4,6 +4,9 @@ export class BaseError {
 }
 
 export class InvalidParamsError extends BaseError {
+  constructor(message: string | string[]) {
+    super(message);
+  }
 }
 
 export class UnprocessableEntityError extends BaseError {

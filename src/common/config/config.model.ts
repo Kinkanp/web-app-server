@@ -1,10 +1,9 @@
 export interface AppConfig {
+    environment: {
+        isDev: boolean;
+    }
     database: {
-        host: string;
-        user: string;
-        name: string;
-        password: string;
-        port: number;
+        url: string;
     },
     app: {
         port: number;

@@ -5,7 +5,7 @@ import { APP_CONFIG, AppConfig } from '../../common/config';
 import { HTTP_EXCEPTION_HANDLER, HTTP_SERVER_CONFIG } from './core/inversion';
 import { IAppModule } from '../../ioc';
 import { ConfigModule } from '../../common/config';
-import { LoggerModule } from '../../common/logger/logger.module';
+import { LoggerModule } from '../../common/logger';
 
 export class HttpModule extends IAppModule {
   static requires() {
