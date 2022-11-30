@@ -1,4 +1,5 @@
-import * as request from 'supertest';
+import request from 'supertest';
+import { describe, test, expect } from 'vitest';
 import { createEndpoint, getHttpServer } from './common';
 
 describe('app', () => {

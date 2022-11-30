@@ -1,5 +1,8 @@
 import 'reflect-metadata';
 import './common/mocks';
 import { App } from '../src/main';
+import { afterEach } from 'vitest';
 
-afterAll(() => App.shutdown())
+afterEach(() => {
+  return App.shutdown().then();
+})

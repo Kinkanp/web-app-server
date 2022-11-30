@@ -1,10 +1,11 @@
 import { HttpServer } from '../../src/transport/http/core';
 import { Logger } from '../../src/common/logger';
+import { vitest } from 'vitest';
 
 // @ts-ignore
-jest.spyOn(Logger.prototype, 'canLog')
+vitest.spyOn(Logger.prototype, 'canLog')
   // @ts-ignore
   .mockImplementation(() => false);
 
-jest.spyOn(HttpServer.prototype, 'listen')
+vitest.spyOn(HttpServer.prototype, 'listen')
   .mockImplementation(() => null);

@@ -1,3 +1,5 @@
+import { describe, test } from 'vitest';
+
 describe('routing', () => {
   test.todo('should match route `/`', () => {
     // TODO

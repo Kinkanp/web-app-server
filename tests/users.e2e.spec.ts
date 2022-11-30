@@ -1,8 +1,9 @@
-import * as request from 'supertest';
+import request from 'supertest';
+import { describe, test, expect } from 'vitest';
 import { createEndpoint, extractData, getHttpServer, expectValidDate } from './common';
 import { User } from '../src/domain/user/user.entity';
 
-describe('users', () => {
+describe.only('users', () => {
   const server = getHttpServer();
 
   describe('users list', () => {
