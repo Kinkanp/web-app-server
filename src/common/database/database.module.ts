@@ -1,26 +1,18 @@
-import { Container } from 'inversify';
 import { createConnection } from './database-connection';
-import { ConfigModule } from '../config';
-import { IAppModule } from '../../ioc';
+import { APP_CONFIG, AppConfig, ConfigModule } from '../config';
+import { AppModule } from '../../ioc';
 import { DBConnection } from './database.model';
 
 export const DB_CONNECTION = Symbol('DB connection');
 
-export class DatabaseModule extends IAppModule {
-  static requires() {
-    return [ConfigModule];
-  }
+export class DatabaseModule extends AppModule<{ [DB_CONNECTION]: DBConnection }> {
+  protected imports = [ConfigModule];
+  protected exports = [DB_CONNECTION];
 
-  static register(container: Container): void {
-    this.container = container;
-
-    const config = ConfigModule.get();
+  public register(): void {
+    const config = this.inject<AppConfig>(APP_CONFIG);
     const connection = createConnection(config.environment.isDev);
 
-    this.container.bind(DB_CONNECTION).toConstantValue(connection);
-  }
-
-  static getConnection(): DBConnection {
-    return this.container.get(DB_CONNECTION);
+    this.bind(DB_CONNECTION).toConstantValue(connection);
   }
 }

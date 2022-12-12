@@ -1,25 +1,31 @@
 import { Routes } from '../../core';
-import { UsersModule } from '../../../../aggregation/users';
+import { USER_SERVICE, UserModule } from '../../../../aggregation/user';
 import { UserController } from './user.controller';
+import { IoC } from '../../../../ioc';
+import { AUTH_GUARD, AuthGuardModule } from '../../guards';
+import { IRequestContextValues } from '../../http.constants';
 
-export function getUserRoutes(): Routes {
-  const controller = new UserController(UsersModule.service);
+export function getUserRoutes(): Routes<IRequestContextValues> {
+  const service = IoC.injectModule(UserModule).import(USER_SERVICE);
+  const controller = new UserController(service);
+  const authGuard = IoC.injectModule(AuthGuardModule).import(AUTH_GUARD);
 
   return [
     {
       path: '/users',
-      method: 'POST',
-      handler: (req) => controller.create(req)
+      method: 'GET',
+      handler: () => controller.list()
     },
     {
-      path: '/users',
+      path: '/users/current',
       method: 'GET',
-      handler: (req) => controller.list(req)
+      guards: [authGuard],
+      handler: ({ context }) => controller.current(context.get('user'))
     },
     {
       path: '/users/:id',
       method: 'GET',
-      handler: (req, res, [id]) => controller.findOne(req, res, id)
-    }
+      handler: ({ req, res, params }) => controller.one(req, res, params[0])
+    },
   ];
 }

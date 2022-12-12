@@ -33,7 +33,5 @@
     ],
     "quotes": ["warn", "single"],
     "@typescript-eslint/ban-ts-comment": "off"
-    // TODO
-//    "sort-imports": "warn"
   }
 }

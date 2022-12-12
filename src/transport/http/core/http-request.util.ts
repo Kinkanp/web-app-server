@@ -4,7 +4,7 @@ export class HttpRequestUtil {
   constructor(private req: HttpRequest) {
   }
 
-  public getData<T = unknown>(): Promise<T> {
+  public getData<T = unknown>(): Promise<Partial<T>> {
     let rawData = '';
 
     return new Promise((resolve, reject) => {
@@ -12,7 +12,8 @@ export class HttpRequestUtil {
       this.req.on('error', (error) => reject(error));
       this.req.on('end', () => {
         try {
-          resolve(JSON.parse(rawData));
+          const data = rawData ? JSON.parse(rawData): {};
+          resolve(data);
         } catch(error) {
           reject(error);
         }

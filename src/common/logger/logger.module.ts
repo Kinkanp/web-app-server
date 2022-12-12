@@ -1,11 +1,12 @@
-import { Container } from 'inversify';
-import { IAppModule } from '../../ioc';
+import { AppModule } from '../../ioc';
 import { Logger, LOGGER } from './logger';
+import { ConfigModule } from '../config';
 
-export class LoggerModule extends IAppModule {
-  static register(container: Container): void {
-    this.container = container;
+export class LoggerModule extends AppModule {
+  protected imports = [ConfigModule];
+  protected exports = [LOGGER];
 
-    this.container.bind(LOGGER).to(Logger).inSingletonScope();
+  public register(): void {
+    this.bind(LOGGER).to(Logger).inSingletonScope();
   }
 }

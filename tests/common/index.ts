@@ -1,2 +1,2 @@
-export * from './http-utils';
-export * from './expect-utils';
+export * from './utils/http.utils';
+export * from './utils/expect.utils';

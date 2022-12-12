@@ -11,25 +11,31 @@ import { ExceptionHandler, HttpResponse } from '../core';
 import { isDatabaseError } from '../../../common/database';
 import { inject, injectable } from 'inversify';
 import { ILogger, LOGGER } from '../../../common/logger';
+import { APP_CONFIG, AppConfig } from '../../../common/config';
 
 @injectable()
 export class HttpExceptionHandler implements ExceptionHandler {
-  constructor(@inject(LOGGER) private logger: ILogger) {}
+  constructor(
+    @inject(LOGGER) private logger: ILogger,
+    @inject(APP_CONFIG) private config: AppConfig,
+  ) {}
 
   public handle(res: HttpResponse, error: BaseError | Error): void {
+    this.logger.debug('Exception handler', error);
+
     if (isDatabaseError(error as Error)) {
-      this.logger.error(`Database error (500): ${error.message}`);
+      this.logger.error(`Database error (5xx): ${error.message}`);
       return new InternalErrorResponse(res).status(500).message('Server database error').send();
     }
 
     const clientErrorCode = this.getClientErrorCode(error);
 
     if (clientErrorCode) {
-      this.logger.info(`Client error (400): ${error.message}`);
+      this.logger.info('Error handler', `Client error (4xx): ${error.message}`);
       return new ClientErrorResponse(res).status(clientErrorCode).message(error.message).send();
     }
 
-    this.logger.error(`Uncaught error (500): ${error.message}`);
+    this.logger.error(`Uncaught error (5xx): ${error.message}`);
     return new InternalErrorResponse(res).status(500).message(error.message).send();
   }
 

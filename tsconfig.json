@@ -3,6 +3,7 @@
     "incremental": true,
     "target": "es2016",
     "lib": ["esnext"],
+    "types": ["./src/common/types"],
     "module": "CommonJS",
     "baseUrl": "./src",
     "sourceMap": true,
@@ -12,8 +13,9 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "strictPropertyInitialization": false,
+    "esModuleInterop": true,
     "experimentalDecorators": true
   },
-  "include": ["./src/index.ts"],
+  "include": ["./src/main.ts"],
   "exclude": ["node_modules", "**/*.spec.ts"]
 }

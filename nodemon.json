@@ -7,5 +7,8 @@
   "env": {
     "NODE_ENV": "development"
   },
+  "events": {
+    "start": "clear"
+  },
   "ext": "js,json,ts"
 }

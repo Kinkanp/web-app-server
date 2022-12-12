@@ -1,4 +1,4 @@
-import { RouteHandler, Routes } from './routing.model';
+import { Guard, MatchRouteResult, Routes, GuardParams } from './routing.model';
 import { HttpRequest } from '../server.model';
 import { ROUTING_ID_SIGN } from './routing.constants';
 
@@ -8,7 +8,7 @@ export class HttpRouting {
   }
 
   // TODO: add condition for '*' route
-  public match(req: HttpRequest): { handler?: RouteHandler; dynamicParams: string[] } {
+  public match(req: HttpRequest): MatchRouteResult {
     const reqUrlParts = req.url?.split('/');
     const dynamicParams: string[] = [];
 
@@ -35,7 +35,17 @@ export class HttpRouting {
       });
     });
 
-    return { handler: route?.handler, dynamicParams };
+    return {
+      handler: route?.handler,
+      guards: route?.guards,
+      dynamicParams
+    };
+  }
+
+  public runGuards(guards: Guard[] = [], params: GuardParams): Promise<void> {
+    const promises = guards.map(guard => guard.allow(params));
+
+    return Promise.all(promises).then();
   }
 
   private setBaseUrl(): void {

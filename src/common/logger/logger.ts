@@ -1,30 +1,46 @@
-import { injectable } from 'inversify';
+import { inject, injectable } from 'inversify';
+import { APP_CONFIG, AppConfig } from '../config';
+import { log, LogSeverity } from './utils';
 
 export const LOGGER = Symbol('App logger');
 
+type Message = any[];
+
 export interface ILogger {
-  info(message: string): void;
-  error(message: string): void;
-  warning(message: string): void;
+  info(scope: string, ...message: Message): void;
+  error(...message: Message): void;
+  warning(...message: Message): void;
+  debug(...message: Message): void;
 }
 
 @injectable()
 export class Logger implements ILogger {
-  public error(message: string): void {
+  constructor(
+    @inject(APP_CONFIG) private config: AppConfig
+  ) {
+  }
+
+  public error(...message: Message): void {
     if (this.canLog()) {
-      console.error(`Error: ${message}`)
+      log(LogSeverity.ERROR, 'ERROR: ', ...message);
     }
   }
 
-  public warning(message: string): void {
+  public warning(...message: Message): void {
     if (this.canLog()) {
-      console.log(`Warn: ${message}`)
+      log(LogSeverity.WARN, 'WARN: ', ...message);
     }
   }
 
-  public info(message: string): void {
+  public info(...message: Message): void {
     if (this.canLog()) {
-      console.log(`Info: ${message}`)
+      log(LogSeverity.INFO, 'INFO: ', ...message);
+    }
+  }
+
+  public debug(...message: Message): void {
+    if (this.config.environment.isDev) {
+      log(LogSeverity.DEBUG, 'DEBUG: ', ...message);
     }
   }
 

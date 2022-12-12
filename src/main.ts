@@ -1,40 +1,62 @@
 import 'reflect-metadata';
 import { HttpRoutes } from './transport/http/routes';
-import { AppModule } from './ioc';
-import { HttpModule } from './transport/http';
-import { UsersModule } from './aggregation/users';
-import { DatabaseModule } from './common/database';
+import { IoC } from './ioc';
+import { HTTP_SERVER, HttpModule } from './transport/http';
+import { UserModule } from './aggregation/user';
+import { DatabaseModule, DB_CONNECTION } from './common/database';
 import { ConfigModule } from './common/config';
-import { LoggerModule } from './common/logger';
+import { logError, LoggerModule } from './common/logger';
+import { AuthModule } from './aggregation/auth';
+import { CryptoModule } from './common/crypto';
+import { UuidModule } from './common/uuid';
+import { JwtModule } from './common/jwt';
+import { getGuardModules } from './transport/http/guards';
+import { Routes } from './transport/http/core';
 
 export class App {
   static {
     try {
       this.register();
-      this.start()
-    } catch {
+      this.start();
+    } catch (e) {
+      logError('App unhandled exception', e);
       this.shutdown();
     }
   }
 
   static shutdown(): Promise<void[]> {
+    const server = IoC.injectModule(HttpModule).import(HTTP_SERVER);
+    const dbConnection = IoC.injectModule(DatabaseModule).import(DB_CONNECTION);
+
     return Promise.all([
-      HttpModule.getServer().close(),
-      DatabaseModule.getConnection().$disconnect()
+      server.close(),
+      dbConnection.$disconnect()
     ]);
   }
 
   private static register(): void {
-    AppModule.register([
+    // TODO: separate registration for domain and common ?
+    IoC.register([
+      //Small utils
+      CryptoModule,
+      UuidModule,
+      JwtModule,
+      // Common
       LoggerModule,
       ConfigModule,
       DatabaseModule,
       HttpModule,
-      UsersModule
+      ...getGuardModules(),
+      // Domain
+      UserModule,
+      AuthModule,
     ]);
   }
 
   private static start(): void {
-    HttpModule.getServer().setRoutes(HttpRoutes.get()).create().listen();
+    const server = IoC.injectModule(HttpModule).import(HTTP_SERVER);
+    const routes = HttpRoutes.get() as Routes;
+
+    server.setRoutes(routes).create().listen();
   }
 }

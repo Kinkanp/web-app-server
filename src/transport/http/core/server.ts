@@ -1,16 +1,18 @@
 import * as http from 'http';
 import { inject, injectable } from 'inversify';
 import { HttpServerConfig, HttpRequest, HttpResponse, ExceptionHandler } from './server.model';
-import { RouteDynamicParams, RouteHandler, Routes } from './routing/routing.model';
+import { Guard, GuardParams, RouteDynamicParams, RouteHandler, Routes } from './routing/routing.model';
 import { HttpRouting } from './routing/routing';
 import { ClientErrorResponse, InternalErrorResponse, SuccessResponse } from './responses';
 import { ILogger, LOGGER } from '../../../common/logger';
 import { HTTP_EXCEPTION_HANDLER, HTTP_SERVER_CONFIG } from './inversion';
+import { RequestContext } from './request-context';
 
 @injectable()
 export class HttpServer {
   private server: http.Server;
   private routing: HttpRouting;
+  private requestContext = new RequestContext();
 
   constructor(
     @inject(HTTP_EXCEPTION_HANDLER) private exceptionHandler: ExceptionHandler,
@@ -29,7 +31,12 @@ export class HttpServer {
     return this;
   }
 
-  public close(): Promise<void> {
+  public async close(): Promise<void> {
+    if (!this.server) {
+      this.logger.debug('Attempt to close not started server');
+      return;
+    }
+
     return new Promise(resolve => {
       this.server.close(() => resolve());
     });
@@ -49,10 +56,17 @@ export class HttpServer {
   }
 
   private async handleRequest(req: HttpRequest, res: HttpResponse): Promise<void> {
-    const { handler, dynamicParams } = this.routing.match(req);
+    const { handler, guards, dynamicParams } = this.routing.match(req);
 
     if (handler) {
-      await this.handleRouteResponse(handler, req, res, dynamicParams);
+      this.requestContext.reset();
+
+      try {
+        await this.routing.runGuards(guards, { req, res, context: this.requestContext });
+        await this.handleRouteResponse(handler, req, res, dynamicParams);
+      } catch(error) {
+        this.handleRouteError(res, error as Error);
+      }
     } else {
       new ClientErrorResponse(res).status(404).message('Not Found').send();
     }
@@ -65,7 +79,7 @@ export class HttpServer {
     dynamicParams: RouteDynamicParams
   ): Promise<void> {
     try {
-      const data = await handler(req, res, dynamicParams);
+      const data = await handler({ req, res, params: dynamicParams, context: this.requestContext });
 
       if (data) {
         new SuccessResponse(res).status(200).send(data);

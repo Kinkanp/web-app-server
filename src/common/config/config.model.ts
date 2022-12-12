@@ -8,5 +8,6 @@ export interface AppConfig {
     app: {
         port: number;
         baseUrl: string;
+        jwtSecret: string;
     }
 }

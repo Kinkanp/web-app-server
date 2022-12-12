@@ -14,13 +14,13 @@ export class UserRepository {
     });
   }
 
-  public async create(data: CreateUserParams): Promise<User> {
+  public create(data: Defined<CreateUserParams>): Promise<User> {
     return this.connection.userModel.create({ data });
   }
 
-  public async findOne(id: number): Promise<User | null> {
+  public findOne(params: Partial<Pick<User, 'id' | 'username'>>): Promise<User | null> {
     return this.connection.userModel.findUnique({
-      where: { id }
+      where: params
     });
   }
 }

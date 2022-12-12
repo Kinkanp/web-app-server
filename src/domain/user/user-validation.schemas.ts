@@ -2,27 +2,25 @@ import { Validator } from '../../common/validation';
 import { CreateUserParams } from './user.models';
 
 export enum UserValidationSchemas {
-  create = 'createUserSchema',
-  getOne = 'getOneUserSchema',
+  create = 'createUserSchema'
 }
 
-Validator.registerSchema<CreateUserParams>(
+Validator.registerSchema<Defined<CreateUserParams>>(
   {
     type: 'object',
     properties: {
-      firstName: { type: 'string', maxLength: 255 },
-      lastName: { type: 'string', maxLength: 255 }
+      username: {
+        type: 'string',
+        maxLength: 50
+      },
+      password: {
+        type: 'string',
+        maxLength: 16,
+        minLength: 8
+      }
     },
-    required: ['firstName', 'lastName'],
+    required: ['username', 'password'],
     additionalProperties: false
   },
   UserValidationSchemas.create
-);
-
-Validator.registerSchema<number>(
-  {
-    type: 'number',
-    errorMessage: '`id` should be a number'
-  },
-  UserValidationSchemas.getOne
 );
