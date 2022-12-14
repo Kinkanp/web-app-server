@@ -23,7 +23,7 @@ export async function runSeeds(): Promise<Seeds> {
 
   return connection.$disconnect()
     .then(() => seeds)
-    .catch(async (e) => {
+    .catch(async (e :any) => {
       console.error(e)
       await connection.$disconnect();
       process.exit(1);

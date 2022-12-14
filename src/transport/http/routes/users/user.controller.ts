@@ -1,5 +1,5 @@
 import { UserPublic } from '../../../../aggregation/user';
-import { HttpRequest, HttpResponse } from '../../core';
+import { HttpRequest, HttpResponse } from '@packages/http-server';
 import { Validator } from '../../../../common/validation';
 
 interface UserServiceModel {

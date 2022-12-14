@@ -1,4 +1,4 @@
-import { Routes } from '../core';
+import { Routes } from '@packages/http-server';
 import { getUserRoutes } from './users/user.routes';
 import { getAuthRoutes } from './auth/auth.routes';
 import { IRequestContextValues } from '../http.constants';

@@ -1,14 +1,14 @@
-import { Routes } from '../../core';
+import { Routes } from '@packages/http-server';
 import { USER_SERVICE, UserModule } from '../../../../aggregation/user';
 import { UserController } from './user.controller';
-import { IoC } from '../../../../ioc';
+import { injectModule } from '@packages/ioc';
 import { AUTH_GUARD, AuthGuardModule } from '../../guards';
 import { IRequestContextValues } from '../../http.constants';
 
 export function getUserRoutes(): Routes<IRequestContextValues> {
-  const service = IoC.injectModule(UserModule).import(USER_SERVICE);
+  const service = injectModule(UserModule).import(USER_SERVICE);
   const controller = new UserController(service);
-  const authGuard = IoC.injectModule(AuthGuardModule).import(AUTH_GUARD);
+  const authGuard = injectModule(AuthGuardModule).import(AUTH_GUARD);
 
   return [
     {

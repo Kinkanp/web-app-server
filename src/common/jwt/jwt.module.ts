@@ -1,4 +1,4 @@
-import { AppModule } from '../../ioc';
+import { AppModule } from '@packages/ioc';
 import * as jsonwebtoken from 'jsonwebtoken';
 import { JwtPayload, Secret, SignOptions, VerifyOptions } from 'jsonwebtoken';
 

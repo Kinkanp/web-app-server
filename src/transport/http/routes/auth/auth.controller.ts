@@ -1,4 +1,4 @@
-import { HttpRequest, HttpRequestUtil } from '../../core';
+import { HttpRequest, HttpRequestUtil } from '@packages/http-server';
 import {
   AccessTokensResponse,
   LoginParams,

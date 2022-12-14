@@ -1,4 +1,4 @@
-import { AppModule } from '../../ioc';
+import { AppModule } from '@packages/ioc';
 import { Logger, LOGGER } from './logger';
 import { ConfigModule } from '../config';
 

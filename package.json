@@ -1,11 +1,13 @@
 {
   "name": "web-app-server",
   "version": "1.0.0",
-  "main": "index.js",
+  "keywords": [],
+  "author": "Ivan Romanenko",
+  "license": "ISC",
   "scripts": {
     "start": "nodemon --config nodemon.json ./src/main.ts",
     "inspect": "nodemon --config nodemon.json --inspect ./src/main.ts",
-    "test": "npm run test:w -- --run",
+    "test": "npm run test --workspaces && npm run test:w -- --run",
     "test:w": "vitest --dir ./src/",
     "test:e2e": "npm run test:e2e:w -- --run",
     "test:e2e:w": "vitest -c ./tests/vitest.config.ts",
@@ -18,9 +20,10 @@
     "seed": "ts-node seeds/seed.ts",
     "lint": "eslint -c .eslintrc.json src/*"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "workspaces": [
+    "packages/ioc",
+    "packages/http-server"
+  ],
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
     "@types/jsonwebtoken": "^8.5.9",
@@ -34,12 +37,14 @@
     "dotenv": "^16.0.2",
     "eslint": "^8.27.0",
     "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-workspaces": "^0.7.0",
     "inversify": "^6.0.1",
     "nodemon": "^2.0.19",
     "prettier": "^2.7.1",
     "reflect-metadata": "^0.1.13",
     "supertest": "^6.3.1",
     "ts-node": "^10.9.1",
+    "tsconfig-paths": "^4.1.1",
     "typescript": "^4.8.2",
     "vitest": "^0.25.3"
   },
@@ -48,7 +53,6 @@
     "ajv": "^8.11.2",
     "ajv-errors": "^3.0.0",
     "bcrypt": "^5.1.0",
-    "inversify-inject-decorators": "^3.1.0",
     "jsonwebtoken": "^8.5.1",
     "pg": "^8.8.0",
     "prisma": "^4.6.1",

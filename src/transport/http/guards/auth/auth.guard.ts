@@ -1,5 +1,5 @@
 import { inject, injectable, LazyServiceIdentifer } from 'inversify';
-import { Guard, GuardParams } from '../../core';
+import { Guard, GuardParams } from '@packages/http-server';
 import { AUTH_GUARD_HELPER } from '../index';
 import { UnauthorizedError } from '../../../../common/errors';
 import { UserPublic } from '../../../../aggregation/user';

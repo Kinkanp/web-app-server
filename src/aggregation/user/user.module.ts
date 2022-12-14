@@ -1,7 +1,7 @@
 import { UserRepository } from '../../domain/user/user.repository';
 import { UserService } from '../../domain/user/user.service';
 import { DatabaseModule } from '../../common/database';
-import { AppModule } from '../../ioc';
+import { AppModule } from '@packages/ioc';
 import { LoggerModule } from '../../common/logger';
 import { CryptoModule } from '../../common/crypto';
 

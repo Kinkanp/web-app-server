@@ -3,13 +3,16 @@
     "node": true,
     "es2021": true
   },
-  "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "plugins": ["@typescript-eslint", "import"],
+  "plugins": ["@typescript-eslint", "import", "workspaces"],
   "settings": {
     "import/resolver": {
       "node": {
@@ -20,13 +23,31 @@
     }
   },
   "rules": {
+    "workspaces/no-relative-imports": "error",
+    "workspaces/no-cross-imports": "error",
+    "workspaces/no-absolute-imports": "error",
     "import/no-restricted-paths": [
       "error",
       {
         "zones": [
           {
-            "target": "./src/!(aggregation|domain)/**/*",
-            "from": "./src/domain/**/*"
+            "target": "src/!(aggregation|domain)/**/*",
+            "from": "src/domain/**/*"
+          },
+          {
+            "target": "src/**/*",
+            "from": "./packages/**/*"
+          },
+          // TODO: write a plugin which will:
+          // 1. prohibit imports from other packages
+          // 2. prohibit absolute imports from current package
+          {
+            "target": "packages/http-server/**/*",
+            "from": "./packages/ioc/**/*"
+          },
+          {
+            "target": "packages/ioc/**/*",
+            "from": "./packages/http-server/**/*"
           }
         ]
       }

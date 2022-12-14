@@ -1,4 +1,4 @@
-import { AppModule } from '../../ioc';
+import { AppModule } from '@packages/ioc';
 import { getAppConfig } from './config';
 
 export const APP_CONFIG = Symbol('App config');

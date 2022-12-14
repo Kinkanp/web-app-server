@@ -1,14 +1,14 @@
-import { Routes } from '../../core';
+import { Routes } from '@packages/http-server';
 import { AUTH_SERVICE, AuthModule } from '../../../../aggregation/auth';
 import { AuthController } from './auth.controller';
-import { IoC } from '../../../../ioc';
+import { injectModule } from '@packages/ioc';
 import { AUTH_GUARD, AuthGuardModule } from '../../guards';
 import { IRequestContextValues } from '../../http.constants';
 
 export function getAuthRoutes(): Routes<IRequestContextValues> {
-  const authService = IoC.injectModule(AuthModule).import(AUTH_SERVICE);
+  const authService = injectModule(AuthModule).import(AUTH_SERVICE);
   const auth = new AuthController(authService);
-  const authGuard = IoC.injectModule(AuthGuardModule).import(AUTH_GUARD);
+  const authGuard = injectModule(AuthGuardModule).import(AUTH_GUARD);
 
   return [
     {

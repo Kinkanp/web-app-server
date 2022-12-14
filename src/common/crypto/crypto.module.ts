@@ -1,4 +1,4 @@
-import { AppModule } from '../../ioc';
+import { AppModule } from '@packages/ioc';
 import * as bcrypt from 'bcrypt';
 
 export const CRYPTO = Symbol.for('crypto');

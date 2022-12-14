@@ -1,6 +1,6 @@
 import { createConnection } from './database-connection';
 import { APP_CONFIG, AppConfig, ConfigModule } from '../config';
-import { AppModule } from '../../ioc';
+import { AppModule } from '@packages/ioc';
 import { DBConnection } from './database.model';
 
 export const DB_CONNECTION = Symbol('DB connection');

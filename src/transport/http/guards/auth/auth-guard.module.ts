@@ -1,4 +1,4 @@
-import { AppModule, IoC } from '../../../../ioc';
+import { AppModule, injectModule } from '@packages/ioc';
 import { AUTH_SERVICE, AuthModule } from '../../../../aggregation/auth';
 import { AuthGuard, AuthGuardHelper } from '../../index';
 
@@ -15,7 +15,7 @@ export class AuthGuardModule extends AppModule<{ [AUTH_GUARD]: AuthGuard }> {
   }
 
   private get helper(): AuthGuardHelper {
-    const authService = IoC.injectModule(AuthModule).import(AUTH_SERVICE);
+    const authService = injectModule(AuthModule).import(AUTH_SERVICE);
 
     return {
       authenticate: (accessToken: string) => authService.authenticate(accessToken)

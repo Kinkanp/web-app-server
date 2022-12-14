@@ -1,4 +1,4 @@
-import { HttpServer } from '../../src/transport/http/core';
+import { HttpServer } from '@packages/http-server';
 import { Logger } from '../../src/common/logger';
 import { vitest } from 'vitest';
 
@@ -8,4 +8,4 @@ vitest.spyOn(Logger.prototype, 'canLog')
   .mockImplementation(() => false);
 
 vitest.spyOn(HttpServer.prototype, 'listen')
-  .mockImplementation(() => null);
+  .mockImplementation(() => Promise.resolve());

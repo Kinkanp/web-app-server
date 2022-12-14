@@ -1,21 +1,22 @@
 {
-  "compilerOptions": {
-    "incremental": true,
-    "target": "es2016",
-    "lib": ["esnext"],
-    "types": ["./src/common/types"],
-    "module": "CommonJS",
-    "baseUrl": "./src",
-    "sourceMap": true,
-    "outDir": "./dist",
-    "allowJs": true,
-    "removeComments": true,
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "strictPropertyInitialization": false,
-    "esModuleInterop": true,
-    "experimentalDecorators": true
+  "extends": "./tsconfig.base.json",
+  "ts-node": {
+    "require": ["tsconfig-paths/register"]
   },
-  "include": ["./src/main.ts"],
-  "exclude": ["node_modules", "**/*.spec.ts"]
+  "compilerOptions": {
+    "baseUrl": ".",
+    "types": ["./src/common/types", "node"],
+    "outDir": "dist",
+    "paths": {
+      "@packages/*": ["packages/*/index.ts"]
+    },
+    "declaration": false,
+    "composite": false
+  },
+  "include": ["src", "packages"],
+  "exclude": ["node_modules", "**/*.spec.ts"],
+//  "files": [],
+//  "references": [
+//    { "path": "packages/my-custom-lib" },
+//  ]
 }

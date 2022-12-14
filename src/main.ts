@@ -1,6 +1,5 @@
 import 'reflect-metadata';
 import { HttpRoutes } from './transport/http/routes';
-import { IoC } from './ioc';
 import { HTTP_SERVER, HttpModule } from './transport/http';
 import { UserModule } from './aggregation/user';
 import { DatabaseModule, DB_CONNECTION } from './common/database';
@@ -11,7 +10,8 @@ import { CryptoModule } from './common/crypto';
 import { UuidModule } from './common/uuid';
 import { JwtModule } from './common/jwt';
 import { getGuardModules } from './transport/http/guards';
-import { Routes } from './transport/http/core';
+import { injectModule, registerModules } from '@packages/ioc';
+import { Routes } from '@packages/http-server';
 
 export class App {
   static {
@@ -25,8 +25,8 @@ export class App {
   }
 
   static shutdown(): Promise<void[]> {
-    const server = IoC.injectModule(HttpModule).import(HTTP_SERVER);
-    const dbConnection = IoC.injectModule(DatabaseModule).import(DB_CONNECTION);
+    const server = injectModule(HttpModule).import(HTTP_SERVER);
+    const dbConnection = injectModule(DatabaseModule).import(DB_CONNECTION);
 
     return Promise.all([
       server.close(),
@@ -36,7 +36,7 @@ export class App {
 
   private static register(): void {
     // TODO: separate registration for domain and common ?
-    IoC.register([
+    registerModules([
       //Small utils
       CryptoModule,
       UuidModule,
@@ -54,9 +54,9 @@ export class App {
   }
 
   private static start(): void {
-    const server = IoC.injectModule(HttpModule).import(HTTP_SERVER);
-    const routes = HttpRoutes.get() as Routes;
+    const server = injectModule(HttpModule).import(HTTP_SERVER);
+    const routes = HttpRoutes.get();
 
-    server.setRoutes(routes).create().listen();
+    server.create().listen(routes as Routes);
   }
 }

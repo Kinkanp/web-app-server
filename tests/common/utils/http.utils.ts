@@ -1,9 +1,9 @@
 import { Server } from 'http';
 import { HTTP_SERVER, HttpModule } from '../../../src/transport/http';
-import { IoC } from '../../../src/ioc';
+import { injectModule } from '@packages/ioc';
 
 export function getHttpServer(): Server {
-  return IoC.injectModule(HttpModule).import(HTTP_SERVER).get();
+  return injectModule(HttpModule).import(HTTP_SERVER).get();
 }
 
 export function createEndpoint(url: string): string {

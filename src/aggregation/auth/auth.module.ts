@@ -1,4 +1,4 @@
-import { AppModule, IoC } from '../../ioc';
+import { AppModule, injectModule } from '@packages/ioc';
 import { AuthRepository, AuthService, AuthServiceHelper } from '../../domain/auth';
 import { USER_SERVICE, UserModule } from '../user';
 import { LoggerModule } from '../../common/logger';
@@ -33,7 +33,7 @@ export class AuthModule extends AppModule<Exports> {
   }
 
   private get helper(): AuthServiceHelper {
-    const userService = IoC.injectModule(UserModule).import(USER_SERVICE);
+    const userService = injectModule(UserModule).import(USER_SERVICE);
 
     return {
       findUserByUsername: (username) => userService.findByUsername(username),
