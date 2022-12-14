@@ -7,8 +7,8 @@ import { IRequestContextValues } from '../../http.constants';
 
 export function getUserRoutes(): Routes<IRequestContextValues> {
   const service = injectModule(UserModule).import(USER_SERVICE);
-  const controller = new UserController(service);
   const authGuard = injectModule(AuthGuardModule).import(AUTH_GUARD);
+  const controller = new UserController(service);
 
   return [
     {

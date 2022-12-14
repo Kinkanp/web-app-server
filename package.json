@@ -18,7 +18,7 @@
     "migration:deploy": "npx prisma migrate deploy --schema src/common/database/schema.prisma",
     "migration:rollback": "npx prisma migrate resolve --schema src/common/database/schema.prisma",
     "seed": "ts-node seeds/seed.ts",
-    "lint": "eslint -c .eslintrc.json src/*"
+    "lint": "eslint -c .eslintrc.json src/* && eslint -c .eslintrc.json packages/*"
   },
   "workspaces": [
     "packages/ioc",

@@ -74,11 +74,9 @@ export class HttpServer {
     dynamicParams: RouteDynamicParams
   ): Promise<void> {
     try {
-      const data = await handler({ req, res, params: dynamicParams, context: this.requestContext });
+      const response = await handler({ req, res, params: dynamicParams, context: this.requestContext });
 
-      if (data) {
-        new SuccessResponse(res).status(200).send(data);
-      }
+      new SuccessResponse(res).status(200).send(response);
     } catch (error) {
       this.handleRouteError(res, error as Error);
     }

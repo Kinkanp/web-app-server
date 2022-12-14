@@ -1,6 +1,4 @@
-export interface SuccessResponseModel<TData = any> {
-  data: TData;
-}
+export type SuccessResponseModel<TData = any> = SuccessResponse<TData> | null;
 
 export interface ErrorResponseModel {
   error: ResponseError;
@@ -12,3 +10,7 @@ export interface ResponseError {
 }
 
 export type ResponseErrorMessage = string | string[];
+
+interface SuccessResponse<TData> {
+  data: TData;
+}

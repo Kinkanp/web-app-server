@@ -24,7 +24,7 @@ export class AuthRepository {
     });
   }
 
-  public deleteSessions(userId: number): Promise<void> {
-    return this.connection.sessionModel.deleteMany({ where: { userId } }).then();
+  public async deleteSessions(userId: number): Promise<void> {
+    await this.connection.sessionModel.deleteMany({ where: { userId } });
   }
 }

@@ -1,7 +1,7 @@
 import { AppModule } from '@packages/ioc';
 import * as bcrypt from 'bcrypt';
 
-export const CRYPTO = Symbol.for('crypto');
+export const CRYPTO = Symbol('crypto');
 
 export interface ICrypto {
   hash(data: string | Buffer, salt?: number): Promise<string>;

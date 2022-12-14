@@ -9,6 +9,10 @@ export abstract class CommonSuccessResponse<TCode extends number> extends Common
   }
 
   public get(data: unknown): SuccessResponseModel {
+    if (data == null) {
+      return null;
+    }
+
     return { data };
   }
 }
