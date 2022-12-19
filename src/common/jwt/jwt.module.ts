@@ -18,12 +18,15 @@ export interface Jwt {
 }
 
 export class JwtModule extends AppModule {
-  protected exports = [JWT];
+  protected declares = [
+    {
+      map: JWT,
+      to: <Jwt>{
+        sign: (...params) => jsonwebtoken.sign(...params),
+        verify: (...params) => jsonwebtoken.verify(...params),
+      }
+    }
+  ];
 
-  public register(): void {
-    this.bind<Jwt>(JWT).toConstantValue({
-      sign: (...params) => jsonwebtoken.sign(...params),
-      verify: (...params) => jsonwebtoken.verify(...params),
-    });
-  }
+  protected exports = [JWT];
 }

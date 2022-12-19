@@ -1,5 +1,5 @@
 import { AppModule } from '@packages/ioc';
-import * as bcrypt from 'bcrypt';
+import { CryptoService } from './crypto.service';
 
 export const CRYPTO = Symbol('crypto');
 
@@ -9,16 +9,8 @@ export interface ICrypto {
 }
 
 export class CryptoModule extends AppModule<{ [CRYPTO]: ICrypto }> {
+  protected declares = [
+    { map: CRYPTO, to: CryptoService }
+  ]
   protected exports = [CRYPTO];
-
-  public register(): void {
-    this.bind<ICrypto>(CRYPTO).toConstantValue({
-      compare(data: string | Buffer, hashed: string): Promise<boolean> {
-        return bcrypt.compare(data, hashed);
-      },
-      hash(data: string | Buffer, salt = 10): Promise<string> {
-        return bcrypt.hash(data, salt);
-      }
-    });
-  }
 }

@@ -5,13 +5,10 @@ import {
   APP_MODULE_GET_EXPORTS_SYMBOL,
   APP_MODULE_GET_IMPORTS_SYMBOL,
   APP_MODULE_INIT_SYMBOL,
-  IocOptions
+  IocOptions,
+  ModuleConstructor
 } from './ioc.constants';
 import { AppModule } from './ioc.model';
-
-interface ModuleConstructor {
-  new (): AppModule;
-}
 
 export class IoC {
   private static builtModules: AppModule[];

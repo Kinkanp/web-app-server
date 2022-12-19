@@ -1,24 +1,24 @@
 import { inject, injectable } from 'inversify';
 import { TYPES } from '../types';
 import { ILogger, LoggerModule } from '../logger';
-import { AppModule } from '../../../src/ioc.model';
+import { AppModule } from '../../../../src/ioc.model';
 import { WeaponModule } from '../weapon';
-import { SuperSpeedModule } from '../superpowers/super-speed-power';
 import { IWarrior } from './index';
+import { FirePowerModule } from '../superpowers/fire-power';
 import { SuperPower } from '../superpowers';
 
-export class NinjaModule extends AppModule {
-  protected exports = [TYPES.Warrior];
-  protected imports = [WeaponModule, LoggerModule, SuperSpeedModule];
+export class BerserkModule extends AppModule {
+  protected exports = [TYPES.Warrior2];
+  protected imports = [WeaponModule, LoggerModule, FirePowerModule];
 
   public register() {
-    this.bind(TYPES.Warrior).to(Ninja);
+    this.bind(TYPES.Warrior2).to(Berserk);
   }
 }
 
 @injectable()
-class Ninja implements IWarrior {
-  public name = 'Ninja';
+class Berserk implements IWarrior {
+  public name = 'Berserk';
 
   constructor(
     @inject(TYPES.Weapon) private weapon: string,
@@ -28,7 +28,7 @@ class Ninja implements IWarrior {
     this.logger.log(`warrior constructed: power: ${this.power}`);
   }
 
-  public info(): string {
+  public info() {
     return `I am warrior with a name: ${this.name} and a power: ${this.power}`;
   }
 }

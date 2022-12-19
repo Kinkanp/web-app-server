@@ -11,6 +11,7 @@ export function getAppConfig(): AppConfig {
       port: parseInt(process.env.APP_PORT as string),
       baseUrl: process.env.APP_BASE_URL as string,
       jwtSecret: process.env.JWT_SECRET as string,
+      jwtExpiresIn: process.env.JWT_EXPIRES_IN as string,
     },
     environment: {
       isDev: process.env.NODE_ENV === 'development'

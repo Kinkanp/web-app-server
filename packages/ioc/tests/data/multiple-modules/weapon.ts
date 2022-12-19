@@ -1,7 +1,7 @@
 import { inject, injectable } from 'inversify';
 import { TYPES } from './types';
 import { ILogger, LoggerModule } from './logger';
-import { AppModule } from '../../src/ioc.model';
+import { AppModule } from '../../../src/ioc.model';
 
 export class WeaponModule extends AppModule {
   protected exports = [TYPES.Weapon];

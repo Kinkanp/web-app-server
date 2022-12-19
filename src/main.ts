@@ -12,6 +12,7 @@ import { JwtModule } from './common/jwt';
 import { getGuardModules } from './transport/http/guards';
 import { injectModule, registerModules } from '@packages/ioc';
 import { Routes } from '@packages/http-server';
+import { PostModule } from './aggregation/post';
 
 export class App {
   static {
@@ -35,7 +36,6 @@ export class App {
   }
 
   private static register(): void {
-    // TODO: separate registration for domain and common ?
     registerModules([
       //Small utils
       CryptoModule,
@@ -50,6 +50,7 @@ export class App {
       // Domain
       UserModule,
       AuthModule,
+      PostModule
     ]);
   }
 

@@ -1,10 +1,10 @@
-import { Routes } from '@packages/http-server';
-import { getUserRoutes } from './users/user.routes';
+import { getUserRoutes } from './user/user.routes';
 import { getAuthRoutes } from './auth/auth.routes';
-import { IRequestContextValues } from '../http.constants';
+import { AppRoutes } from '../http.constants';
+import { getPostRoutes } from './post/post.routes';
 
 export class HttpRoutes {
-  static get(): Routes<IRequestContextValues> {
+  static get(): AppRoutes {
     return [
       {
         path: '/health',
@@ -12,7 +12,8 @@ export class HttpRoutes {
         handler: async () => ({ status: 'Healthy' })
       },
       ...getAuthRoutes(),
-      ...getUserRoutes()
+      ...getUserRoutes(),
+      ...getPostRoutes()
     ];
   }
 }

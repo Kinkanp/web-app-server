@@ -30,7 +30,7 @@ export class AuthController {
   }
 
   public async refresh(req: HttpRequest): Promise<AccessTokensResponse> {
-    const params = await new HttpRequestUtil(req).getData<AccessTokensResponse>();
+    const params = await new HttpRequestUtil(req).getData();
     const { refreshToken } = Validator.requiredObject<{ refreshToken: string }>(params, {
       refreshToken: { type: 'string' }
     });

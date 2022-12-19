@@ -8,11 +8,8 @@ export interface Uuid {
 }
 
 export class UuidModule extends AppModule {
+  protected declares = [
+    { map: UUID, to: { v4: () => uuidv4() } }
+  ];
   protected exports = [UUID];
-
-  public register(): void {
-    this.bind<Uuid>(UUID).toConstantValue({
-      v4: () => uuidv4()
-    });
-  }
 }

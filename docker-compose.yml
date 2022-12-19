@@ -1,0 +1,30 @@
+version: '3.9'
+
+services:
+#  node:
+#    image: $DHUB/$DHUB_IMAGE
+#    entrypoint: ["./start.sh"]
+#    environment:
+#      TZ: $APP_TZ
+#    build:
+#      context: .
+#    env_file:
+#      - .env
+#    ports:
+#      - "8080:8080"
+#    depends_on:
+#      - db
+  web_app_db:
+    image: postgres:15-alpine
+    restart: always
+    volumes:
+      - db_data:/var/lib/pg
+    environment:
+      POSTGRES_PASSWORD: $DB_PASSWORD
+      POSTGRES_DB: $DB_NAME
+      POSTGRES_USER: $DB_USER
+    ports:
+      - "5432:5432"
+
+volumes:
+  db_data:

@@ -8,11 +8,13 @@ export const AUTH_GUARD_HELPER = Symbol('auth guard helper');
 export class AuthGuardModule extends AppModule<{ [AUTH_GUARD]: AuthGuard }> {
   protected imports = [AuthModule];
   protected exports = [AUTH_GUARD];
-
-  public register(): void {
-    this.bind(AUTH_GUARD).to(AuthGuard)
-    this.bind<AuthGuardHelper>(AUTH_GUARD_HELPER).toConstantValue(this.helper);
-  }
+  protected declares = [
+    { map: AUTH_GUARD, to: AuthGuard },
+    {
+      map: AUTH_GUARD_HELPER,
+      to: () => this.helper
+    }
+  ];
 
   private get helper(): AuthGuardHelper {
     const authService = injectModule(AuthModule).import(AUTH_SERVICE);

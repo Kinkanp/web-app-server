@@ -10,9 +10,8 @@ export const USER_SERVICE = Symbol('App User service');
 export class UserModule extends AppModule<{ [USER_SERVICE]: UserService }> {
   protected imports = [LoggerModule, DatabaseModule, CryptoModule];
   protected exports = [USER_SERVICE];
-
-  public register(): void {
-    this.bind(UserRepository).toSelf();
-    this.bind(USER_SERVICE).to(UserService);
-  }
+  protected declares  = [
+    UserRepository,
+    { map: USER_SERVICE, to: UserService }
+  ];
 }

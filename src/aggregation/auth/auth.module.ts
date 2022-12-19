@@ -25,12 +25,11 @@ export class AuthModule extends AppModule<Exports> {
     JwtModule,
   ];
   protected exports = [AUTH_SERVICE];
-
-  public register(): void {
-    this.bind(AuthRepository).toSelf();
-    this.bind(AUTH_SERVICE).to(AuthService);
-    this.bind<AuthServiceHelper>(AUTH_SERVICE_HELPER).toConstantValue(this.helper);
-  }
+  protected declares = [
+    AuthRepository,
+    { map: AUTH_SERVICE, to: AuthService },
+    { map: AUTH_SERVICE_HELPER, to: () => this.helper }
+  ];
 
   private get helper(): AuthServiceHelper {
     const userService = injectModule(UserModule).import(USER_SERVICE);

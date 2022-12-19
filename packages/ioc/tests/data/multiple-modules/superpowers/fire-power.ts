@@ -1,22 +1,22 @@
 import { inject, injectable } from 'inversify';
 import { TYPES } from '../types';
 import { ILogger, LoggerModule } from '../logger';
-import { AppModule } from '../../../src/ioc.model';
+import { AppModule } from '../../../../src/ioc.model';
 import { SuperPower } from './index';
 
-export class SuperSpeedModule extends AppModule {
+export class FirePowerModule extends AppModule {
   protected exports = [TYPES.Superpower];
   protected imports = [LoggerModule];
 
   public register() {
-    this.bind(TYPES.Superpower).to(SuperSpeed);
+    this.bind(TYPES.Superpower).to(FirePower);
   }
 }
 
 @injectable()
-export class SuperSpeed implements SuperPower {
-  public name = 'super speed';
-
+export class FirePower implements SuperPower {
+  public name = 'fire';
+  
   constructor(
     @inject(TYPES.Logger) private logger: ILogger
   ) {

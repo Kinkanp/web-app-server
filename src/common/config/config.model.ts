@@ -9,5 +9,6 @@ export interface AppConfig {
         port: number;
         baseUrl: string;
         jwtSecret: string;
+        jwtExpiresIn: string;
     }
 }

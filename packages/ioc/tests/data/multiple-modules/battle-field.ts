@@ -2,7 +2,7 @@ import { inject, injectable } from 'inversify';
 import { TYPES } from './types';
 import { NinjaModule } from './warriors/ninja';
 import { ILogger, LoggerModule } from './logger';
-import { AppModule } from '../../src/ioc.model';
+import { AppModule } from '../../../src/ioc.model';
 import { IWarrior } from './warriors';
 import { BerserkModule } from './warriors/berserk';
 

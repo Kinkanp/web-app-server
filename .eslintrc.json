@@ -38,6 +38,10 @@
             "target": "src/**/*",
             "from": "./packages/**/*"
           },
+          {
+            "target": "src/**/*",
+            "from": "**/@packages/http-server/src/**"
+          },
           // TODO: write a plugin which will:
           // 1. prohibit imports from other packages
           // 2. prohibit absolute imports from current package

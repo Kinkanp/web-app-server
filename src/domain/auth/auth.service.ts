@@ -110,7 +110,10 @@ export class AuthService {
   private createAccessTokens(userId: number): AccessTokensResponse {
     return {
       refreshToken: this.uuid.v4(),
-      accessToken: this.jwt.sign({ userId }, this.config.app.jwtSecret, { expiresIn: '1h' })
+      accessToken: this.jwt.sign(
+        { userId },
+        this.config.app.jwtSecret, { expiresIn: this.config.app.jwtExpiresIn }
+      )
     };
   }
 }

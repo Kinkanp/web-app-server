@@ -4,14 +4,27 @@ import {
   APP_MODULE_GET_EXPORTS_SYMBOL,
   APP_MODULE_GET_IMPORTS_SYMBOL,
   APP_MODULE_INIT_SYMBOL,
-  AppModuleExports,
-  AppModuleImports
+  AppModuleDeclare,
+  AppModuleExport,
+  AppModuleImports,
+  Declare,
+  DeclareDirectValue,
+  DeclareMappedValue
 } from './ioc.constants';
+import { isClass } from './utils';
+import DynamicValue = interfaces.DynamicValue;
 
 export abstract class AppModule<TExports = any> {
-  public abstract register(): void;
+  public register() {
+    if (!this.declares.length) {
+      throw new Error(`Module ${this.constructor.name} doesn't declare any values`);
+    }
 
-  protected exports: AppModuleExports = [];
+    this.declares.forEach(declare => this.bindDeclaredValues(declare));
+  }
+
+  protected exports: AppModuleExport = [];
+  protected declares: AppModuleDeclare = [];
   protected imports: AppModuleImports = [];
   protected exportsMap = new Map();
   protected bind: interfaces.Bind;
@@ -19,7 +32,7 @@ export abstract class AppModule<TExports = any> {
   private container: Container;
   private identifiers: interfaces.ServiceIdentifier[] = [];
 
-  public get [APP_MODULE_GET_EXPORTS_SYMBOL](): AppModuleExports {
+  public get [APP_MODULE_GET_EXPORTS_SYMBOL](): AppModuleExport {
     return this.exports;
   }
 
@@ -53,11 +66,10 @@ export abstract class AppModule<TExports = any> {
     return this.container.get<T>(identifier);
   }
 
-
   private setContainer(container: Container): void {
     this.container = container;
 
-    this.bind = (identifier) => {
+    this.bind = identifier => {
       this.identifiers.push(identifier);
       return this.container.bind(identifier);
     };
@@ -71,10 +83,32 @@ export abstract class AppModule<TExports = any> {
         if (this.exports.includes(identifier)) {
           this.exportsMap.set(identifier, value);
         }
-      } catch(error) {
+      } catch (error) {
         const moduleName = this.constructor.name;
         throw new Error(`${moduleName}: ${(error as Error).message}`);
       }
     });
+  }
+
+  private bindDeclaredValues(declare: Declare): void {
+    if (!Object.hasOwn(declare, 'map')) {
+      this.bind(declare as DeclareDirectValue).toSelf();
+
+      return;
+    }
+
+    const { to, map } = declare as DeclareMappedValue;
+
+    if (isClass(to)) {
+      this.bind(map).to(to);
+      return;
+    }
+
+    if (typeof to === 'function') {
+      this.bind(map).toDynamicValue(to as DynamicValue<any>);
+      return;
+    }
+
+    this.bind(map).toConstantValue(to);
   }
 }

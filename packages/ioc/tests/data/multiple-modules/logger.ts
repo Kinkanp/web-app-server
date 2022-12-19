@@ -1,5 +1,5 @@
 import { TYPES } from './types';
-import { AppModule } from '../../src/ioc.model';
+import { AppModule } from '../../../src/ioc.model';
 import { injectable } from 'inversify';
 
 export class LoggerModule extends AppModule {

@@ -4,9 +4,6 @@ import { ConfigModule } from '../config';
 
 export class LoggerModule extends AppModule {
   protected imports = [ConfigModule];
+  protected declares = [{ map: LOGGER, to: Logger }];
   protected exports = [LOGGER];
-
-  public register(): void {
-    this.bind(LOGGER).to(Logger).inSingletonScope();
-  }
 }
