@@ -17,8 +17,8 @@ import { PostModule } from './aggregation/post';
 export class App {
   static {
     try {
-      this.register();
-      this.start();
+      this.init();
+      this.run();
     } catch (e) {
       logError('App unhandled exception', e);
       this.shutdown();
@@ -35,7 +35,7 @@ export class App {
     ]);
   }
 
-  private static register(): void {
+  private static init(): void {
     registerModules([
       //Small utils
       CryptoModule,
@@ -54,7 +54,7 @@ export class App {
     ]);
   }
 
-  private static start(): void {
+  private static run(): void {
     const server = injectModule(HttpModule).import(HTTP_SERVER);
     const routes = HttpRoutes.get();
 

@@ -69,6 +69,7 @@ describe('users', () => {
           });
         });
     });
+
     test<LocalTestContext>('should return error if access token is expired', ({ seeds }) => {
       const [user] = seeds.users;
       const token = createAccessToken(user.id, { expiresIn: '1ms' });

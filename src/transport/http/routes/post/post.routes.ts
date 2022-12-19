@@ -13,6 +13,7 @@ export function getPostRoutes(): AppRoutes {
     {
       path: '/posts',
       method: 'GET',
+      guards: [authGuard],
       handler: () => controller.list()
     },
     {

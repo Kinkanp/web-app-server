@@ -15,8 +15,4 @@
   },
   "include": ["src", "packages"],
   "exclude": ["node_modules", "**/*.spec.ts"],
-//  "files": [],
-//  "references": [
-//    { "path": "packages/my-custom-lib" },
-//  ]
 }
