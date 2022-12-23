@@ -20,9 +20,9 @@ const ONE_USER_REFRESH_TOKENS: string[] = [
 export const getValidRefreshToken = useDataOnce(REFRESH_TOKENS);
 export const getMultipleRefreshTokensForSingleUser = useDataOnce(ONE_USER_REFRESH_TOKENS);
 
-
 export function getSessionsSeed(
-  connection: PrismaClient, users: UserModel[]
+  connection: PrismaClient,
+  users: UserModel[]
 ): Promise<SessionModel[]> {
   const userIdWithSingleSession = users[0].id;
   const userIdWithMultipleSessions = users[1].id;

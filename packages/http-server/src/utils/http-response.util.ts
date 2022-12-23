@@ -26,15 +26,15 @@ export class HttpResponseUtil {
     return this;
   }
 
-  private formatData(data: unknown): string | number | null {
+  private formatData(data: unknown): string | number | boolean | symbol | null {
     if (!data) {
       return null;
     }
 
-    if (typeof data === 'string' || typeof data === 'number') {
-      return data;
+    if (typeof data === 'object') {
+      return JSON.stringify(data);
     }
 
-    return JSON.stringify(data);
+    return data as string;
   }
 }

@@ -12,6 +12,11 @@ export abstract class ExceptionHandler {
   abstract handle(res: HttpResponse, error: ExceptionHandlerError): void;
 }
 
+export interface HttpLogger {
+  info(...message: any[]): void;
+  debug(...message: any[]): void;
+}
+
 interface ExceptionHandlerError {
   message: string | string[];
 }

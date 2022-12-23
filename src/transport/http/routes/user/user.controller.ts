@@ -16,11 +16,9 @@ export class UserController {
   }
 
   public async one(req: HttpRequest, res: HttpResponse, id: string): Promise<UserPublic> {
-    const idValue = Validator.required(+id, 'integer', {
-      errorMessage: '`id` should be a number'
-    });
+    const userId = Validator.id(id);
 
-    return this.userService.findOne(idValue);
+    return this.userService.findOne(userId);
   }
 
   public async current(user: UserPublic): Promise<UserPublic> {

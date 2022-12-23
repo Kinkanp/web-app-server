@@ -25,6 +25,7 @@ export class AppHttpServer {
 
   public async listen(routes: Routes): Promise<void> {
     await this.server
+      .setLogger(this.logger)
       .setRoutes(routes)
       .setExceptionHandlers(this.exceptionHandler)
       .create()

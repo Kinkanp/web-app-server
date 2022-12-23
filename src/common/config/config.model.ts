@@ -10,5 +10,6 @@ export interface AppConfig {
         baseUrl: string;
         jwtSecret: string;
         jwtExpiresIn: string;
+        logsPath: string;
     }
 }

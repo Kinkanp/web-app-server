@@ -3,9 +3,9 @@ import { Logger } from '../../src/common/logger';
 import { vitest } from 'vitest';
 
 // @ts-ignore
-vitest.spyOn(Logger.prototype, 'canLog')
+vitest.spyOn(Logger.prototype, 'disable')
   // @ts-ignore
-  .mockImplementation(() => false);
+  .mockImplementation(() => true);
 
 vitest.spyOn(HttpServer.prototype, 'listen')
   .mockImplementation(() => Promise.resolve());

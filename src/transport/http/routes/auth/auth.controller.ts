@@ -21,7 +21,7 @@ export class AuthController {
 
   public async login(req: HttpRequest): Promise<LoginResponse> {
     const params = await new HttpRequestUtil(req).getData<LoginParams>();
-    const { username, password } = Validator.requiredObject<LoginParams>(params, {
+    const { username, password } = Validator.object<LoginParams>(params, {
       username: { type: 'string' },
       password: { type: 'string' },
     });
@@ -30,20 +30,18 @@ export class AuthController {
   }
 
   public async refresh(req: HttpRequest): Promise<AccessTokensResponse> {
-    const params = await new HttpRequestUtil(req).getData();
-    const { refreshToken } = Validator.requiredObject<{ refreshToken: string }>(params, {
-      refreshToken: { type: 'string' }
-    });
+    const params = await new HttpRequestUtil(req).getData<{ refreshToken: string }>();
+    const refreshToken = Validator.string(params.refreshToken);
 
     return this.authService.refresh(refreshToken);
   }
 
   public async register(req: HttpRequest): Promise<UserPublic> {
     const params = await new HttpRequestUtil(req).getData<RegisterParams>();
-    const { username, password } = Validator.requiredObject<RegisterParams>(params, {
+    const { username, password } = Validator.object<RegisterParams>(params, {
       username: { type: 'string' },
       password: { type: 'string' },
-    })
+    });
 
     return this.authService.register({ username, password });
   }

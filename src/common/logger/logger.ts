@@ -1,51 +1,89 @@
 import { inject, injectable } from 'inversify';
 import { APP_CONFIG, AppConfig } from '../config';
-import { log, LogSeverity } from './utils';
-
-export const LOGGER = Symbol('App logger');
-
-type Message = any[];
-
-export interface ILogger {
-  info(scope: string, ...message: Message): void;
-  error(...message: Message): void;
-  warning(...message: Message): void;
-  debug(...message: Message): void;
-}
+import { logToConsole } from './console-logger';
+import { ILogger, LoggerMessage, LoggerOptions, LogSeverity } from './logger.model';
+import { FileLogger } from './file-logger';
 
 @injectable()
 export class Logger implements ILogger {
+  private options: LoggerOptions;
+  private fileLogger: FileLogger;
+
   constructor(
-    @inject(APP_CONFIG) private config: AppConfig
+    @inject(APP_CONFIG) config: AppConfig
   ) {
-  }
+    this.options = {
+      debug: config.environment.isDev,
+      logsPath: config.app.logsPath,
+      logToConsole: true,
+      logToFile: true
+    };
 
-  public error(...message: Message): void {
-    if (this.canLog()) {
-      log(LogSeverity.ERROR, 'ERROR: ', ...message);
+    if (this.options.logsPath) {
+      this.fileLogger = new FileLogger({ path: this.options.logsPath });
     }
   }
 
-  public warning(...message: Message): void {
-    if (this.canLog()) {
-      log(LogSeverity.WARN, 'WARN: ', ...message);
+  public error(...message: LoggerMessage): void {
+    this.onLog(
+      () => logToConsole(LogSeverity.ERROR, ...message),
+      () => this.writeToFile(LogSeverity.ERROR)
+    );
+  }
+
+  public warning(...message: LoggerMessage): void {
+    this.onLog(
+      () => logToConsole(LogSeverity.WARN, ...message),
+      () => this.writeToFile(LogSeverity.WARN, ...message)
+    );
+  }
+
+  public info(...message: LoggerMessage): void {
+    this.onLog(
+      () => logToConsole(LogSeverity.INFO, ...message),
+      () => this.writeToFile(LogSeverity.INFO, ...message)
+    );
+  }
+
+  public debug(...message: LoggerMessage): void {
+    this.onLog(
+      () => {
+        if (this.options.debug) {
+          logToConsole(LogSeverity.DEBUG, ...message);
+        }
+      },
+      () => null
+    );
+  }
+
+  private onLog(consoleLog: () => void, fileLog: () => void) {
+    if (this.disable()) {
+      return;
+    }
+
+    if (this.shouldWriteToConsole()) {
+      consoleLog();
+    }
+
+    if (this.shouldWriteToFile()) {
+      fileLog();
     }
   }
 
-  public info(...message: Message): void {
-    if (this.canLog()) {
-      log(LogSeverity.INFO, 'INFO: ', ...message);
-    }
+  private shouldWriteToConsole(): boolean {
+    return this.options.logToConsole;
   }
 
-  public debug(...message: Message): void {
-    if (this.config.environment.isDev) {
-      log(LogSeverity.DEBUG, 'DEBUG: ', ...message);
-    }
+  private shouldWriteToFile(): boolean {
+    return this.options.logToFile;
+  }
+
+  private writeToFile(severity: LogSeverity, ...message: LoggerMessage): void {
+    this.fileLogger.write(severity, ...message);
   }
 
   // TODO: provide from env
-  private canLog(): boolean {
-    return true;
+  private disable(): boolean {
+    return false;
   }
 }

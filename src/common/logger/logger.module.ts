@@ -1,6 +1,7 @@
 import { AppModule } from '@packages/ioc';
-import { Logger, LOGGER } from './logger';
+import { Logger } from './logger';
 import { ConfigModule } from '../config';
+import { LOGGER } from './logger.model';
 
 export class LoggerModule extends AppModule {
   protected imports = [ConfigModule];

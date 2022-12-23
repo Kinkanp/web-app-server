@@ -1,8 +1,8 @@
 import { UserPublic } from '../../aggregation/user';
-import { Routes } from '@packages/http-server';
+import { RequestContextDefaultValues, Routes } from '@packages/http-server';
 
 export type AppRoutes = Routes<RequestContextValues>;
 
-export interface RequestContextValues {
+export interface RequestContextValues extends RequestContextDefaultValues {
   user: UserPublic;
 }

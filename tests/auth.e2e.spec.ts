@@ -212,6 +212,7 @@ describe('authorisation', () => {
 
       return request(server)
         .post(createEndpoint('auth/refresh'))
+        .send({ refreshToken })
         .expect(400);
     });
 
@@ -226,9 +227,10 @@ describe('authorisation', () => {
         .auth(accessToken, { type: 'bearer' })
         .expect(200);
 
-      const refreshTokensValidation = refreshTokens.map(() => {
+      const refreshTokensValidation = refreshTokens.map((refreshToken) => {
         return request(server)
           .post(createEndpoint('auth/refresh'))
+          .send({ refreshToken })
           .expect(400);
       });
 

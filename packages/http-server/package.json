@@ -4,5 +4,8 @@
   "scripts": {
     "test": "npm run test:w -- --run",
     "test:w": "vitest"
+  },
+  "peerDependencies": {
+    "uuid": "^9.0.0"
   }
 }

@@ -3,19 +3,22 @@ import { getUsersSeed } from './users';
 import { User } from '../src/domain/user/user.entity';
 import { getSessionsSeed } from './sessions';
 import { Session } from '../src/domain/auth';
+import { getPostsSeed, PostsSeed } from './posts';
 
 const connection = new PrismaClient();
 
 export interface Seeds {
   users: User[];
   sessions: Session[];
+  postsWithUsers: PostsSeed;
 }
 
 async function createSeeds(): Promise<Seeds> {
   const users = await getUsersSeed(connection) as User[];
   const sessions = await getSessionsSeed(connection, users);
+  const postsWithUsers = await getPostsSeed(connection, users);
 
-  return { users, sessions };
+  return { users, sessions, postsWithUsers};
 }
 
 export async function runSeeds(): Promise<Seeds> {

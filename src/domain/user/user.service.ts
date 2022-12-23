@@ -3,11 +3,10 @@ import { UserRepository } from './user.repository';
 import { CreateUserParams } from './user.models';
 import { inject, injectable } from 'inversify';
 import { InvalidParamsError, NotFoundError } from '../../common/errors';
-import { Validator } from '../../common/validation';
-import { UserValidationSchemas } from './user-validation.schemas';
 import { ILogger, LOGGER } from '../../common/logger';
 import { CRYPTO, ICrypto } from '../../common/crypto';
 import { excludeFields } from '../../common/utils';
+import { UserValidator } from './user-validator';
 
 @injectable()
 export class UserService {
@@ -15,6 +14,7 @@ export class UserService {
 
   constructor(
     @inject(UserRepository) private userRepository: UserRepository,
+    @inject(UserValidator) private userValidator: UserValidator,
     @inject(LOGGER) private logger: ILogger,
     @inject(CRYPTO) private crypto: ICrypto,
   ) {
@@ -23,26 +23,22 @@ export class UserService {
   public async list(): Promise<UserPublic[]> {
     const users = await this.userRepository.list();
 
-    this.logger.info('User', 'list');
+    this.logger.info('User', `list: ${users.length}`);
     return excludeFields(users, this.exclude);
   }
 
   public async create(params: CreateUserParams): Promise<UserPublic> {
-    const { errors, data } = Validator.validate<Defined<CreateUserParams>>(UserValidationSchemas.create, params);
+    this.userValidator.validateCreate(params);
 
-    if (errors) {
-      throw new InvalidParamsError(errors);
-    }
-
-    const user = await this.userRepository.findOne({ username: data.username });
+    const user = await this.userRepository.findOne({ username: params.username });
 
     if (user) {
       throw new InvalidParamsError('User with such username already exists');
     }
 
     const newUser = {
-      username: data.username,
-      password: await this.crypto.hash(data.password)
+      username: params.username,
+      password: await this.crypto.hash(params.password)
     };
 
     const createdUser = await this.userRepository.create(newUser);

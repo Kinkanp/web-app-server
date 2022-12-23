@@ -4,7 +4,7 @@ import { HTTP_SERVER, HttpModule } from './transport/http';
 import { UserModule } from './aggregation/user';
 import { DatabaseModule, DB_CONNECTION } from './common/database';
 import { ConfigModule } from './common/config';
-import { logError, LoggerModule } from './common/logger';
+import { logErrorToConsole, LoggerModule } from './common/logger';
 import { AuthModule } from './aggregation/auth';
 import { CryptoModule } from './common/crypto';
 import { UuidModule } from './common/uuid';
@@ -20,7 +20,7 @@ export class App {
       this.init();
       this.run();
     } catch (e) {
-      logError('App unhandled exception', e);
+      logErrorToConsole('App unhandled exception', e);
       this.shutdown();
     }
   }

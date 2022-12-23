@@ -16,7 +16,7 @@ export class UnprocessableEntityError extends BaseError {
 }
 
 export class ForbiddenError extends BaseError {
-  constructor(message: string) {
+  constructor(message = 'Not allowed') {
     super(`Forbidden: ${message}`);
   }
 }
