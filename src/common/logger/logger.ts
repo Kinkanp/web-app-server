@@ -7,7 +7,7 @@ import { FileLogger } from './file-logger';
 @injectable()
 export class Logger implements ILogger {
   private options: LoggerOptions;
-  private fileLogger: FileLogger;
+  private readonly fileLogger: FileLogger | null;
 
   constructor(
     @inject(APP_CONFIG) config: AppConfig
@@ -79,7 +79,9 @@ export class Logger implements ILogger {
   }
 
   private writeToFile(severity: LogSeverity, ...message: LoggerMessage): void {
-    this.fileLogger.write(severity, ...message);
+    if (this.fileLogger) {
+      this.fileLogger.write(severity, ...message);
+    }
   }
 
   // TODO: provide from env

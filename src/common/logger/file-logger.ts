@@ -22,6 +22,8 @@ export class FileLogger {
     this.options = { ...this.defaultOptions, ...options };
     this.path = `${options.path}/${this.options.filename}`;
 
+    this.createLogsFolder(this.options.path)
+
     this.writeFromQueueDebounced = debounce(
       this.writeFromQueue.bind(this),
       this.options.debounceTime as number
@@ -47,6 +49,14 @@ export class FileLogger {
       await fs.appendFile(this.path, content, { encoding: 'utf8' });
     } catch(e) {
       logErrorToConsole('Unable to write logs file', e);
+    }
+  }
+
+  private async createLogsFolder(dirPath :string): Promise<void> {
+    try {
+      await fs.access(dirPath);
+    } catch {
+      await fs.mkdir(dirPath);
     }
   }
 }

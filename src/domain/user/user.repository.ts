@@ -14,7 +14,7 @@ export class UserRepository {
     });
   }
 
-  public create(data: Defined<CreateUserParams>): Promise<User> {
+  public create(data: CreateUserParams): Promise<User> {
     return this.connection.userModel.create({ data });
   }
 

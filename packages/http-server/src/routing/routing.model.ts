@@ -29,7 +29,7 @@ export interface GuardParams<TRequestContext = unknown> {
 }
 
 export interface Guard {
-  allow(params: GuardParams): Promise<boolean | void>;
+  allow(params: GuardParams<any>): Promise<boolean | void>;
 }
 
 type Response = Array<unknown> | Record<any, any> | string | number;

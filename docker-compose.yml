@@ -1,19 +1,18 @@
 version: '3.9'
 
 services:
-#  node:
-#    image: $DHUB/$DHUB_IMAGE
-#    entrypoint: ["./start.sh"]
-#    environment:
-#      TZ: $APP_TZ
-#    build:
-#      context: .
-#    env_file:
-#      - .env
-#    ports:
-#      - "8080:8080"
-#    depends_on:
-#      - db
+  server:
+    image: web-app-server
+    entrypoint: [ "./bin/setup-db.sh" ]
+    command: ["node", "dist/main.js"]
+    build:
+      context: .
+    env_file:
+      - .env
+    ports:
+      - "8085:8085"
+    depends_on:
+      - db
   db:
     image: postgres:15-alpine
     restart: always
