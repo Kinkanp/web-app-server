@@ -20,7 +20,7 @@ export class DatabaseModule extends AppModule<{ [DB_CONNECTION]: DBConnection }>
 
         logger.info('Creating database connection');
 
-        return createConnection(config.environment.isDev);
+        return createConnection(config);
       }
     }
   ];

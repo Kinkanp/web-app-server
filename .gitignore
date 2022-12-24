@@ -4,3 +4,4 @@
 .env
 /coverage
 /logs
+/packages/*/dist

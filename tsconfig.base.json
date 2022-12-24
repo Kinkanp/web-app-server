@@ -12,6 +12,7 @@
     "lib": ["esnext"],
     "allowJs": true,
     "strictPropertyInitialization": false,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "skipLibCheck": true,
   }
 }

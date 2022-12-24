@@ -12,6 +12,7 @@
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
+  "ignorePatterns": ["packages/*/dist/**", "**/vendor/*.js"],
   "plugins": ["@typescript-eslint", "import", "workspaces"],
   "settings": {
     "import/resolver": {

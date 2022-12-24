@@ -1,0 +1,46 @@
+name: test
+
+on: [pull_request]
+
+jobs:
+#  lint:
+#    name: Linter
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v2
+#      - name: Install NVM
+#        run: curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+#      - name: Install Node.js
+#        env:
+#          NODE_VERSION: 16.15.0
+#        run: export NVM_DIR="$HOME/.nvm" && . "$NVM_DIR/nvm.sh" --no-use && nvm install
+#      - name: Install dependencies
+#        run: npm install
+#      - name: Lint source code
+#        run: npm run lint
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Create .env file
+      - uses: SpicyPizza/create-envfile@v1.3
+        with:
+          file_name: .env
+          envkey_DB_NAME: ${{ secrets.DB_NAME }}
+          envkey_DB_USER: ${{ secrets.DB_USER }}
+          envkey_DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          envkey_DB_PORT: ${{ secrets.DB_PORT }}
+          envkey_DB_URL: ${{ secrets.DB_URL }}
+          envkey_APP_PORT: ${{ secrets.APP_PORT }}
+          envkey_APP_BASE_URL: ${{ secrets.APP_BASE_URL }}
+          envkey_APP_LOGS_PATH: ${{ secrets.APP_LOGS_PATH }}
+          envkey_JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          envkey_JWT_EXPIRES_IN: ${{ secrets.JWT_EXPIRES_IN }}
+      - name: 'Check env file'
+        run: |
+          cat .env
+          echo "END"
+      - name: Test
+#        run: cat .env
+        run: docker-compose -f docker-compose.yml -f docker-compose.test.yml run node

@@ -1,8 +1,6 @@
 import { Validator } from '../../common/validation';
 import { CreatePostParams, UpdatePostParams } from './post.models';
 import { injectable } from 'inversify';
-import { JSONSchemaType } from 'ajv';
-import { Post } from './post.entity';
 
 @injectable()
 export class PostValidator {
