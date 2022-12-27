@@ -13,7 +13,7 @@ jobs:
       - name: Echo
         run: echo '${{ toJSON(github) }}'
       - name: Echo2
-        run: echo '${{ GITHUB_REF }}'
+        run: echo '${{ env.GITHUB_REF }}'
       - name: Install SSH Key
         uses: shimataro/ssh-key-action@v2
         with:
@@ -26,7 +26,7 @@ jobs:
           scp docker-compose.yml ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.DHUB_IMAGE }}/ &&
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
           cd ${{ secrets.DHUB_IMAGE }}
-          docker pull ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:${{ GITHUB_REF }}
-          docker tag ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:${{ GITHUB_REF }} ${{ secrets.DHUB_IMAGE }}
+          docker pull ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:${{ env.GITHUB_REF }}
+          docker tag ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:${{ env.GITHUB_REF }} ${{ secrets.DHUB_IMAGE }}
           docker-compose up -d --force-recreate
           "
