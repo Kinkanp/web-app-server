@@ -11,9 +11,9 @@ jobs:
       - name: Echo
         run: echo '${{ toJSON(github) }}'
       - name: Build
-        run: docker build -t ${{ secrets.DHUB_IMAGE }}:${{ github.event.after }} .
+        run: docker build -t ${{ secrets.DHUB_IMAGE }}:${{ github.event.pull_request.head.sha }} .
       - name: Save
-        run: docker save ${{ secrets.DHUB_IMAGE }}:${{ github.event.after }} -o app.tar
+        run: docker save ${{ secrets.DHUB_IMAGE }}:${{ github.event.pull_request.head.sha }} -o app.tar
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
@@ -27,6 +27,8 @@ jobs:
     needs: [build]
     steps:
       - uses: actions/checkout@v2
+      - name: Echo
+        run: echo '${{ toJSON(github) }}'
       - name: Download docker image artifact
         uses: actions/download-artifact@v3
         with:
@@ -48,7 +50,7 @@ jobs:
           envkey_JWT_SECRET: ${{ secrets.JWT_SECRET }}
           envkey_JWT_EXPIRES_IN: ${{ secrets.JWT_EXPIRES_IN }}
       - name: Tag image
-        run: docker tag ${{ secrets.DHUB_IMAGE }}:${{ github.event.after }} ${{ secrets.DHUB_IMAGE }}
+        run: docker tag ${{ secrets.DHUB_IMAGE }}:${{ github.event.pull_request.head.sha }} ${{ secrets.DHUB_IMAGE }}
       - name: Test
         run: docker-compose run server npm test
       - name: Test:e2e
@@ -71,6 +73,6 @@ jobs:
           password: ${{ secrets.DHUB_TOKEN }}
       - name: Publish image
         run: |
-          docker tag ${{ secrets.DHUB_IMAGE }}:${{ github.event.after }} ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:${{ github.event.after }}
-          docker image push ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:${{ github.event.after }}
+          docker tag ${{ secrets.DHUB_IMAGE }}:${{ github.event.pull_request.head.sha }} ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:${{ github.event.pull_request.head.sha }}
+          docker image push ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:${{ github.event.pull_request.head.sha }}
 
