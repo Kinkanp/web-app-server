@@ -5,7 +5,10 @@
   "author": "Ivan Romanenko",
   "license": "ISC",
   "scripts": {
-    "start": "nodemon --config nodemon.json ./src/main.ts",
+    "start": "concurrently -r \"npm:tsc:watch\" \"npm:nodemon:watch\"",
+    "nodemon:watch": "nodemon --delay 0.1 --watch dist --watch packages --exec 'node dist/main.js'",
+    "tsc:watch": "npx tsc -b --watch",
+    "build": "npx tsc -b tsconfig.build.json",
     "inspect": "nodemon --config nodemon.json --inspect ./src/main.ts",
     "test": "npm run test --workspaces && npm run test:w -- --run",
     "test:w": "vitest --dir ./src/",
@@ -17,7 +20,6 @@
     "migration:create": "npx prisma migrate dev --schema src/common/database/schema.prisma --create-only",
     "migration:deploy": "npx prisma migrate deploy --schema src/common/database/schema.prisma",
     "migration:rollback": "npx prisma migrate resolve --schema src/common/database/schema.prisma",
-    "seed": "ts-node seeds/seed.ts",
     "lint": "eslint -c .eslintrc.json src/* && eslint -c .eslintrc.json packages/*"
   },
   "workspaces": [
@@ -34,28 +36,28 @@
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^5.42.1",
     "@vitest/coverage-c8": "^0.25.3",
-    "dotenv": "^16.0.2",
+    "concurrently": "^7.6.0",
     "eslint": "^8.27.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-workspaces": "^0.7.0",
-    "inversify": "^6.0.1",
     "nodemon": "^2.0.19",
     "prettier": "^2.7.1",
-    "reflect-metadata": "^0.1.13",
-    "supertest": "^6.3.1",
-    "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.1.1",
-    "typescript": "^4.8.2",
-    "vitest": "^0.25.3"
+    "typescript": "^4.8.2"
   },
   "dependencies": {
     "@prisma/client": "^4.6.1",
     "ajv": "^8.11.2",
     "ajv-errors": "^3.0.0",
     "bcrypt": "^5.1.0",
+    "dotenv": "^16.0.2",
+    "inversify": "^6.0.1",
     "jsonwebtoken": "^8.5.1",
     "pg": "^8.8.0",
     "prisma": "^4.6.1",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "reflect-metadata": "^0.1.13",
+    "vitest": "^0.25.3",
+    "supertest": "^6.3.1"
   }
 }
