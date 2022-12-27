@@ -8,8 +8,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Echo
-        run: echo '${{ toJSON(github) }}'
       - name: Build
         run: docker build -t ${{ secrets.DHUB_IMAGE }}:${{ github.event.pull_request.head.sha }} .
       - name: Save
@@ -27,8 +25,6 @@ jobs:
     needs: [build]
     steps:
       - uses: actions/checkout@v2
-      - name: Echo
-        run: echo '${{ toJSON(github) }}'
       - name: Download docker image artifact
         uses: actions/download-artifact@v3
         with:
