@@ -23,7 +23,7 @@ describe('app', () => {
       .expect(200)
       .expect(res => {
         expect(res.body.data).toStrictEqual({
-          status: 'Healthy'
+          status: 'Ok'
         })
       })
   });

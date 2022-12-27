@@ -9,7 +9,7 @@ export class HttpRoutes {
       {
         path: '/health',
         method: 'GET',
-        handler: async () => ({ status: 'Healthy' })
+        handler: async () => ({ status: 'Ok' })
       },
       ...getAuthRoutes(),
       ...getUserRoutes(),
