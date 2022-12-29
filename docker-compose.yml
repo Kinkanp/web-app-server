@@ -5,17 +5,27 @@ services:
     image: web-app-server
     entrypoint: [ "./bin/setup-db.sh" ]
     command: ["node", "dist/main.js"]
+    networks:
+      - server
+      - client
     build:
       context: .
     env_file:
       - .env
-    ports:
-      - "8085:8085"
     depends_on:
       - db
+  client:
+    image: web-app-client
+    networks:
+      - client
+    ports:
+      - "80:80"
+      - "443:443"
   db:
     image: postgres:15-alpine
     restart: always
+    networks:
+      - server
     volumes:
       - db_data:/var/lib/pg
     environment:
@@ -25,5 +35,8 @@ services:
     ports:
       - "5432:5432"
 
+networks:
+  client:
+  server:
 volumes:
   db_data:
