@@ -1,0 +1,16 @@
+name: Build client
+
+on:
+  pull_request:
+    paths:
+      - 'client/**'
+
+
+jobs:
+  build:
+    name: Build docker image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build
+        run: echo "Hello"
