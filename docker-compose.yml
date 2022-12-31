@@ -2,20 +2,20 @@ version: '3.9'
 
 services:
   server:
-    image: web-app-server
-    entrypoint: [ "./bin/setup-db.sh" ]
+    image: kinkan1/web-app-server
+    entrypoint: ["./bin/setup-db.sh"]
     command: ["node", "dist/main.js"]
+    build:
+      context: .
     networks:
       - server
       - client
-    build:
-      context: .
     env_file:
       - .env
     depends_on:
       - db
   client:
-    image: web-app-client
+    image: kinkan1/web-app-client
     networks:
       - client
     ports:
@@ -27,11 +27,12 @@ services:
     networks:
       - server
     volumes:
-      - db_data:/var/lib/pg
+      - db_data:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: $DB_PASSWORD
       POSTGRES_DB: $DB_NAME
       POSTGRES_USER: $DB_USER
+      PGDATA: /var/lib/postgresql/data
     ports:
       - "5432:5432"
 

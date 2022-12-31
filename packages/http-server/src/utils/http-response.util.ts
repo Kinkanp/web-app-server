@@ -20,10 +20,7 @@ export class HttpResponseUtil {
 
   public send(data?: unknown): this {
     const formattedData = this.formatData(data);
-    this.res.writeHead(this.code, {
-      'Content-type': this.contentTypeHeader,
-      'Access-Control-Allow-Origin': '*'
-    });
+    this.res.writeHead(this.code, { 'Content-type': this.contentTypeHeader });
     this.res.end(formattedData)
 
     return this;

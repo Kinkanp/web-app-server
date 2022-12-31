@@ -15,11 +15,18 @@ jobs:
         with:
           username: ${{ secrets.DHUB_USER }}
           password: ${{ secrets.DHUB_TOKEN }}
-      - name: Update latest image
+      - name: Set server latest image
         run: |
           docker pull ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:${{ github.event.commits[0].id }}
           docker tag ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:${{ github.event.commits[0].id }} ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:latest
           docker push ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:latest
+        continue-on-error: true
+      - name: Set client latest image
+        run: |
+          docker pull ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_CLIENT_IMAGE }}:${{ github.event.commits[0].id }}
+          docker tag ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_CLIENT_IMAGE }}:${{ github.event.commits[0].id }} ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_CLIENT_IMAGE }}:latest
+          docker push ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_CLIENT_IMAGE }}:latest
+        continue-on-error: true
       - name: Install SSH Key
         uses: shimataro/ssh-key-action@v2
         with:
@@ -33,6 +40,5 @@ jobs:
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
           cd ${{ secrets.DHUB_IMAGE }}
           docker pull ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:latest
-          docker tag ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:latest ${{ secrets.DHUB_IMAGE }}
           docker-compose up -d --force-recreate
           "
