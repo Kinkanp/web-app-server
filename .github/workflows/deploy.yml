@@ -15,20 +15,22 @@ jobs:
     continue-on-error: true
     steps:
       - uses: actions/checkout@v2
-      - uses: kamatama41/get-pr-number-action@v0
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: 8BitJonny/gh-get-current-pr@2.2.0
+      - run: echo "Your PR number is ${{ steps.PR.outputs.number }} and its JSON is ${{ steps.PR.outputs.pr }}"
       - name: Show the number
-        run: echo "PR number is ${{ steps.action.outputs.number }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "PR number is ${{ steps.PR.outputs.number }}"
       - uses: dawidd6/action-download-artifact@v2
         with:
-          pr: ${{ steps.action.outputs.number }}
+          pr: ${{ steps.PR.outputs.number }}
           name: app-docker-image
           workflow: build-server.yml
           if_no_artifact_found: fail
       - run: echo "SERVER_IMAGE_UPDATED=true" >> $GITHUB_ENV
       - name: Load docker image
-        run: docker load --input app.${{ steps.action.outputs.number }}.tar
+        run: docker load --input app.${{ steps.PR.outputs.number }}.tar
       - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
@@ -44,18 +46,19 @@ jobs:
     continue-on-error: true
     steps:
       - uses: actions/checkout@v2
+      - uses: 8BitJonny/gh-get-current-pr@2.2.0
       - uses: kamatama41/get-pr-number-action@v0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
       - uses: dawidd6/action-download-artifact@v2
         with:
-          pr: ${{ steps.action.outputs.number }}
+          pr: ${{ steps.PR.outputs.number }}
           name: app-client-docker-image
           workflow: build-client.yml
           if_no_artifact_found: fail
       - run: echo "CLIENT_IMAGE_UPDATED=true" >> $GITHUB_ENV
       - name: Load docker image
-        run: docker load --input app-client.${{ steps.action.outputs.number }}.tar
+        run: docker load --input app-client.${{ steps.PR.outputs.number }}.tar
       - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
