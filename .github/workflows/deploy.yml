@@ -5,7 +5,7 @@ on:
     branches: [ master ]
 
 permissions:
-  pull_request: read
+  pull-requests: read
 
 jobs:
     publish_server:
