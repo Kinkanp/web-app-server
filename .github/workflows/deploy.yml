@@ -16,6 +16,7 @@ jobs:
         with:
           pr: ${{ steps.action.outputs.number }}
           name: app-docker-image
+          workflow: build-server.yml
       - name: Load docker image
         run: docker load --input app.${{ steps.action.outputs.number }}.tar
       - name: Login to Docker Hub
@@ -38,6 +39,7 @@ jobs:
         with:
           pr: ${{ steps.action.outputs.number }}
           name: app-client-docker-image
+          workflow: build-client.yml
       - name: Load docker image
         run: docker load --input app-client.${{ steps.action.outputs.number }}.tar
       - name: Login to Docker Hub
