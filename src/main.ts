@@ -16,6 +16,7 @@ import { PostModule } from './aggregation/post';
 
 export class App {
   static {
+    console.log('test');
     try {
       this.init();
       this.run();
