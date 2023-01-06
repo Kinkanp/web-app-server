@@ -14,14 +14,9 @@ jobs:
     runs-on: ubuntu-latest
     continue-on-error: true
     steps:
-      - uses: actions/checkout@v2
       - uses: 8BitJonny/gh-get-current-pr@2.2.0
+        id: PR
       - run: echo "Your PR number is ${{ steps.PR.outputs.number }} and its JSON is ${{ steps.PR.outputs.pr }}"
-      - name: Show the number
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          echo "PR number is ${{ steps.PR.outputs.number }}"
       - uses: dawidd6/action-download-artifact@v2
         with:
           pr: ${{ steps.PR.outputs.number }}
@@ -45,8 +40,8 @@ jobs:
     runs-on: ubuntu-latest
     continue-on-error: true
     steps:
-      - uses: actions/checkout@v2
       - uses: 8BitJonny/gh-get-current-pr@2.2.0
+        id: PR
       - uses: kamatama41/get-pr-number-action@v0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
