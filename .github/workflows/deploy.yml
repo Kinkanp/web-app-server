@@ -16,7 +16,7 @@ jobs:
         - name: Debug
           run: echo '${{ toJSON(github) }}'
         - name: Debug
-          run: echo ${{ steps }}
+          run: echo '${{ toJSON(github) }}'
         - name: Get PR number
           id: action
           uses: kamatama41/get-pr-number-action@v0
