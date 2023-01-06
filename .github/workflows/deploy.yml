@@ -5,7 +5,6 @@ on:
     branches: [ master ]
 
 jobs:
-  deploy:
     publish_server:
       name: Publish server image
       runs-on: ubuntu-latest
@@ -46,39 +45,40 @@ jobs:
           run: |
             docker tag ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_CLIENT_IMAGE }} ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_CLIENT_IMAGE }}:${{ github.sha }}
             docker image push ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_CLIENT_IMAGE }}:${{ github.sha }}
-    name: Deploy
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Login to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DHUB_USER }}
-          password: ${{ secrets.DHUB_TOKEN }}
-      - name: Set server latest image
-        run: |
-          docker pull ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:${{ github.event.commits[github.event.commits.length - 2].id }}
-          docker tag ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:${{ github.event.commits[github.event.commits.length - 2].id }} ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:latest
-          docker push ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:latest
-        continue-on-error: true
-      - name: Set client latest image
-        run: |
-          docker pull ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_CLIENT_IMAGE }}:${{ github.event.commits[github.event.commits.length - 2].id }}
-          docker tag ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_CLIENT_IMAGE }}:${{ github.event.commits[github.event.commits.length - 2].id }} ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_CLIENT_IMAGE }}:latest
-          docker push ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_CLIENT_IMAGE }}:latest
-        continue-on-error: true
-      - name: Install SSH Key
-        uses: shimataro/ssh-key-action@v2
-        with:
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          known_hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
-      - name: Adding Known Hosts
-        run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
-      - name: Restart app
-        run: |
-          scp docker-compose.yml ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.DHUB_IMAGE }}/ &&
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
-          cd ${{ secrets.DHUB_IMAGE }}
-          docker pull ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:latest
-          docker-compose up -d --force-recreate
-          "
+    deploy:
+      name: Deploy
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v2
+        - name: Login to Docker Hub
+          uses: docker/login-action@v2
+          with:
+            username: ${{ secrets.DHUB_USER }}
+            password: ${{ secrets.DHUB_TOKEN }}
+        - name: Set server latest image
+          run: |
+            docker pull ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:${{ github.event.commits[github.event.commits.length - 2].id }}
+            docker tag ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:${{ github.event.commits[github.event.commits.length - 2].id }} ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:latest
+            docker push ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:latest
+          continue-on-error: true
+        - name: Set client latest image
+          run: |
+            docker pull ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_CLIENT_IMAGE }}:${{ github.event.commits[github.event.commits.length - 2].id }}
+            docker tag ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_CLIENT_IMAGE }}:${{ github.event.commits[github.event.commits.length - 2].id }} ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_CLIENT_IMAGE }}:latest
+            docker push ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_CLIENT_IMAGE }}:latest
+          continue-on-error: true
+        - name: Install SSH Key
+          uses: shimataro/ssh-key-action@v2
+          with:
+            key: ${{ secrets.SSH_PRIVATE_KEY }}
+            known_hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
+        - name: Adding Known Hosts
+          run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+        - name: Restart app
+          run: |
+            scp docker-compose.yml ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.DHUB_IMAGE }}/ &&
+            ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
+            cd ${{ secrets.DHUB_IMAGE }}
+            docker pull ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:latest
+            docker-compose up -d --force-recreate
+            "
