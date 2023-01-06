@@ -16,25 +16,35 @@ jobs:
     steps:
       - uses: 8BitJonny/gh-get-current-pr@2.2.0
         id: PR
+
       - run: echo "Your PR number is ${{ steps.PR.outputs.number }} and its JSON is ${{ steps.PR.outputs.pr }}"
+
       - uses: dawidd6/action-download-artifact@v2
         with:
           pr: ${{ steps.PR.outputs.number }}
           name: app-docker-image
           workflow: build-server.yml
           if_no_artifact_found: fail
-      - run: echo "SERVER_IMAGE_UPDATED=true" >> $GITHUB_ENV
+#      - run: echo "::set-env name=SERVER_IMAGE_UPDATED::true"
+
       - name: Load docker image
         run: docker load --input app.${{ steps.PR.outputs.number }}.tar
+
       - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DHUB_USER }}
           password: ${{ secrets.DHUB_TOKEN }}
+
       - name: Publish image
         run: |
           docker tag ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }} ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:${{ github.sha }}
           docker image push ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:${{ github.sha }}
+
+      - name: set outputs
+        id: set_outputs
+        run: echo "::set-output name=image-updated::true"
+
   publish_client:
     name: Publish client image
     runs-on: ubuntu-latest
@@ -42,27 +52,38 @@ jobs:
     steps:
       - uses: 8BitJonny/gh-get-current-pr@2.2.0
         id: PR
+
       - uses: kamatama41/get-pr-number-action@v0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+
       - uses: dawidd6/action-download-artifact@v2
         with:
           pr: ${{ steps.PR.outputs.number }}
           name: app-client-docker-image
           workflow: build-client.yml
           if_no_artifact_found: fail
-      - run: echo "CLIENT_IMAGE_UPDATED=true" >> $GITHUB_ENV
+
+#      - run: echo "CLIENT_IMAGE_UPDATED=true" >> $GITHUB_ENV
+
       - name: Load docker image
         run: docker load --input app-client.${{ steps.PR.outputs.number }}.tar
+
       - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DHUB_USER }}
           password: ${{ secrets.DHUB_TOKEN }}
+
       - name: Publish image
         run: |
           docker tag ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_CLIENT_IMAGE }} ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_CLIENT_IMAGE }}:${{ github.sha }}
           docker image push ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_CLIENT_IMAGE }}:${{ github.sha }}
+
+      - name: set outputs
+        id: set_outputs
+        run: echo "::set-output name=image-updated::true"
+
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
@@ -70,30 +91,38 @@ jobs:
     continue-on-error: true
     steps:
       - uses: actions/checkout@v2
+
       - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DHUB_USER }}
           password: ${{ secrets.DHUB_TOKEN }}
-      - name: Set server latest image
-        if: ${{ env.SERVER_IMAGE_UPDATED == 'true' }}
+
+      - name: Set Server Latest Image
+        if: ${{ needs.publish_server.outputs.image-updated == 'true' }}
         run: |
           docker pull ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:${{ github.sha }}
           docker tag ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:${{ github.sha }} ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:latest
           docker push ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:latest
-      - name: Set client latest image
-        if: ${{ env.CLIENT_IMAGE_UPDATED == 'true' }}
+
+      - run: echo '${{ needs.publish_client.outputs.image-updated }}'
+
+      - name: Set Client Latest Image
+        if: ${{ needs.publish_client.outputs.image-updated == 'true' }}
         run: |
           docker pull ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_CLIENT_IMAGE }}:${{ github.sha }}
           docker tag ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_CLIENT_IMAGE }}:${{ github.sha }} ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_CLIENT_IMAGE }}:latest
           docker push ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_CLIENT_IMAGE }}:latest
+
       - name: Install SSH Key
         uses: shimataro/ssh-key-action@v2
         with:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           known_hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
+
       - name: Adding Known Hosts
         run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
       - name: Restart app
         run: |
           scp docker-compose.yml ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.DHUB_IMAGE }}/ &&
