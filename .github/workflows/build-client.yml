@@ -21,23 +21,3 @@ jobs:
           name: app-client-docker-image
           path: app-client.tar
           retention-days: 1
-  publish:
-    name: Publish image
-    needs: [build]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download docker image artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: app-client-docker-image
-      - name: Load docker image
-        run: docker load --input app-client.tar
-      - name: Login to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DHUB_USER }}
-          password: ${{ secrets.DHUB_TOKEN }}
-      - name: Publish image
-        run: |
-          docker tag ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_CLIENT_IMAGE }} ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_CLIENT_IMAGE }}:${{ github.event.pull_request.head.sha }}
-          docker image push ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_CLIENT_IMAGE }}:${{ github.event.pull_request.head.sha }}
