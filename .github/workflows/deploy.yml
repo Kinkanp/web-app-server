@@ -4,10 +4,15 @@ on:
   push:
     branches: [ master ]
 
+env:
+  CLIENT_IMAGE_UPDATED: false
+  SERVER_IMAGE_UPDATED: false
+
 jobs:
   publish_server:
     name: Publish server image
     runs-on: ubuntu-latest
+    continue-on-error: true
     steps:
       - uses: kamatama41/get-pr-number-action@v0
         with:
@@ -17,6 +22,8 @@ jobs:
           pr: ${{ steps.action.outputs.number }}
           name: app-docker-image
           workflow: build-server.yml
+          if_no_artifact_found: fail
+      - run: echo "SERVER_IMAGE_UPDATED=true" >> $GITHUB_ENV
       - name: Load docker image
         run: docker load --input app.${{ steps.action.outputs.number }}.tar
       - name: Login to Docker Hub
@@ -31,6 +38,7 @@ jobs:
   publish_client:
     name: Publish client image
     runs-on: ubuntu-latest
+    continue-on-error: true
     steps:
       - uses: kamatama41/get-pr-number-action@v0
         with:
@@ -40,6 +48,8 @@ jobs:
           pr: ${{ steps.action.outputs.number }}
           name: app-client-docker-image
           workflow: build-client.yml
+          if_no_artifact_found: fail
+      - run: echo "CLIENT_IMAGE_UPDATED=true" >> $GITHUB_ENV
       - name: Load docker image
         run: docker load --input app-client.${{ steps.action.outputs.number }}.tar
       - name: Login to Docker Hub
@@ -55,6 +65,7 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     needs: [ publish_client, publish_server ]
+    continue-on-error: true
     steps:
       - uses: actions/checkout@v2
       - name: Login to Docker Hub
@@ -63,17 +74,17 @@ jobs:
           username: ${{ secrets.DHUB_USER }}
           password: ${{ secrets.DHUB_TOKEN }}
       - name: Set server latest image
+        if: ${{ env.SERVER_IMAGE_UPDATED == 'true' }}
         run: |
           docker pull ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:${{ github.sha }}
           docker tag ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:${{ github.sha }} ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:latest
           docker push ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:latest
-        continue-on-error: true
       - name: Set client latest image
+        if: ${{ env.CLIENT_IMAGE_UPDATED == 'true' }}
         run: |
           docker pull ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_CLIENT_IMAGE }}:${{ github.sha }}
           docker tag ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_CLIENT_IMAGE }}:${{ github.sha }} ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_CLIENT_IMAGE }}:latest
           docker push ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_CLIENT_IMAGE }}:latest
-        continue-on-error: true
       - name: Install SSH Key
         uses: shimataro/ssh-key-action@v2
         with:
@@ -87,5 +98,6 @@ jobs:
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
           cd ${{ secrets.DHUB_IMAGE }}
           docker pull ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:latest
+          docker pull ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_CLIENT_IMAGE }}:latest
           docker-compose up -d --force-recreate
           "
