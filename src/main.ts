@@ -16,7 +16,7 @@ import { PostModule } from './aggregation/post';
 
 export class App {
   static {
-    console.log('test 3 + 5 !== 11');
+    console.log('test 3 + 5 !== 15');
     try {
       this.init();
       this.run();
