@@ -9,8 +9,13 @@ jobs:
       name: Publish server image
       runs-on: ubuntu-latest
       steps:
+        - uses: actions/checkout@v2
         - name: Debug
           run: echo '${{ toJSON(github) }}'
+        - name: Get Pull Request Number
+          id: pr
+          run: echo "::set-output name=pull_request_number::$(gh pr view --json number -q .number || echo "")"
+        - run: echo '${{ steps.pr.outputs.pull_request_number }}'
         - name: Download docker image artifact
           uses: actions/download-artifact@v3
           with:
