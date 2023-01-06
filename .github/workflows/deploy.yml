@@ -4,32 +4,20 @@ on:
   push:
     branches: [ master ]
 
-permissions:
-  pull-requests: read
-
 jobs:
     publish_server:
       name: Publish server image
       runs-on: ubuntu-latest
       steps:
-        - uses: actions/checkout@v2
-        - name: Debug
-          run: echo '${{ toJSON(github) }}'
-        - name: Debug
-          run: echo '${{ toJSON(steps) }}'
-        - name: Get PR number
-          id: action
-          uses: kamatama41/get-pr-number-action@v0
+        - uses: kamatama41/get-pr-number-action@v0
           with:
             github_token: ${{ secrets.GITHUB_TOKEN }}
-        - name: Show the number
-          run: echo "PR number is ${{ steps.action.outputs.number }}"
         - name: Download docker image artifact
           uses: actions/download-artifact@v3
           with:
             name: app-docker-image
         - name: Load docker image
-          run: docker load --input app.tar
+          run: docker load --input app.${{ steps.action.outputs.number }}.tar
         - name: Login to Docker Hub
           uses: docker/login-action@v2
           with:
@@ -43,12 +31,15 @@ jobs:
       name: Publish client image
       runs-on: ubuntu-latest
       steps:
+        - uses: kamatama41/get-pr-number-action@v0
+          with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
         - name: Download docker image artifact
           uses: actions/download-artifact@v3
           with:
             name: app-client-docker-image
         - name: Load docker image
-          run: docker load --input app-client.tar
+          run: docker load --input app-client.${{ steps.action.outputs.number }}.tar
         - name: Login to Docker Hub
           uses: docker/login-action@v2
           with:
@@ -61,6 +52,7 @@ jobs:
     deploy:
       name: Deploy
       runs-on: ubuntu-latest
+      needs: [publish_client, publish_server]
       steps:
         - uses: actions/checkout@v2
         - name: Login to Docker Hub
@@ -70,14 +62,14 @@ jobs:
             password: ${{ secrets.DHUB_TOKEN }}
         - name: Set server latest image
           run: |
-            docker pull ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:${{ github.event.commits[0].id }}
-            docker tag ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:${{ github.event.commits[0].id }} ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:latest
+            docker pull ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:${{ github.sha }}
+            docker tag ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:${{ github.sha }} ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:latest
             docker push ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:latest
           continue-on-error: true
         - name: Set client latest image
           run: |
-            docker pull ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_CLIENT_IMAGE }}:${{ github.event.commits[0].id }}
-            docker tag ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_CLIENT_IMAGE }}:${{ github.event.commits[0].id }} ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_CLIENT_IMAGE }}:latest
+            docker pull ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_CLIENT_IMAGE }}:${{ github.sha }}
+            docker tag ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_CLIENT_IMAGE }}:${{ github.sha }} ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_CLIENT_IMAGE }}:latest
             docker push ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_CLIENT_IMAGE }}:latest
           continue-on-error: true
         - name: Install SSH Key
