@@ -12,12 +12,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Build
-        run: docker build -t ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_CLIENT_IMAGE }} .
+
+        run: docker build -t ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_CLIENT_IMAGE }} -f nginx/Dockerfile  .
       - name: Save
-        run: docker save ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_CLIENT_IMAGE }} -o app-client.tar
+        run: docker save ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_CLIENT_IMAGE }} -o app-client.${{ github.event.number }}.tar
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
           name: app-client-docker-image
-          path: app-client.tar
+          path: app-client.${{ github.event.number }}.tar
           retention-days: 1
