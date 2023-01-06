@@ -18,6 +18,7 @@
     "prisma:format": "npx prisma format --schema src/common/database/schema.prisma",
     "models:generate": "npx prisma generate --schema src/common/database/schema.prisma",
     "migration:create": "npx prisma migrate dev --schema src/common/database/schema.prisma --create-only",
+    "migration:deploy:dev": "npx prisma migrate dev --schema src/common/database/schema.prisma",
     "migration:deploy": "npx prisma migrate deploy --schema src/common/database/schema.prisma",
     "migration:rollback": "npx prisma migrate resolve --schema src/common/database/schema.prisma",
     "lint": "eslint -c .eslintrc.json src/* && eslint -c .eslintrc.json packages/*"

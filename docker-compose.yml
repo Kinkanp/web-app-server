@@ -2,28 +2,42 @@ version: '3.9'
 
 services:
   server:
-    image: web-app-server
-    entrypoint: [ "./bin/setup-db.sh" ]
+    image: kinkan1/web-app-server
+    entrypoint: ["./bin/setup-db.sh"]
     command: ["node", "dist/main.js"]
     build:
       context: .
+    networks:
+      - server
+      - client
     env_file:
       - .env
-    ports:
-      - "8085:8085"
     depends_on:
       - db
+  client:
+    image: kinkan1/web-app-client
+    networks:
+      - client
+    ports:
+      - "80:80"
+      - "443:443"
   db:
     image: postgres:15-alpine
     restart: always
+    networks:
+      - server
     volumes:
-      - db_data:/var/lib/pg
+      - db_data:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: $DB_PASSWORD
       POSTGRES_DB: $DB_NAME
       POSTGRES_USER: $DB_USER
+      PGDATA: /var/lib/postgresql/data
     ports:
       - "5432:5432"
 
+networks:
+  client:
+  server:
 volumes:
   db_data:
