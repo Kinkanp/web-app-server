@@ -4,15 +4,13 @@ on:
   push:
     branches: [ master ]
 
-env:
-  CLIENT_IMAGE_UPDATED: false
-  SERVER_IMAGE_UPDATED: false
-
 jobs:
   publish_server:
     name: Publish server image
     runs-on: ubuntu-latest
     continue-on-error: true
+    outputs:
+      image-updated: ${{ steps.set_outputs.outputs.image-updated }}
     steps:
       - uses: 8BitJonny/gh-get-current-pr@2.2.0
         id: PR
@@ -25,7 +23,6 @@ jobs:
           name: app-docker-image
           workflow: build-server.yml
           if_no_artifact_found: fail
-#      - run: echo "::set-env name=SERVER_IMAGE_UPDATED::true"
 
       - name: Load docker image
         run: docker load --input app.${{ steps.PR.outputs.number }}.tar
@@ -43,12 +40,14 @@ jobs:
 
       - name: set outputs
         id: set_outputs
-        run: echo "::set-output name=image-updated::true"
+        run: echo "image-updated=true" >> $GITHUB_OUTPUT
 
   publish_client:
     name: Publish client image
     runs-on: ubuntu-latest
     continue-on-error: true
+    outputs:
+      image-updated: ${{ steps.set_outputs.outputs.image-updated }}
     steps:
       - uses: 8BitJonny/gh-get-current-pr@2.2.0
         id: PR
@@ -63,8 +62,6 @@ jobs:
           name: app-client-docker-image
           workflow: build-client.yml
           if_no_artifact_found: fail
-
-#      - run: echo "CLIENT_IMAGE_UPDATED=true" >> $GITHUB_ENV
 
       - name: Load docker image
         run: docker load --input app-client.${{ steps.PR.outputs.number }}.tar
@@ -82,7 +79,7 @@ jobs:
 
       - name: set outputs
         id: set_outputs
-        run: echo "::set-output name=image-updated::true"
+        run: echo "image-updated=true" >> $GITHUB_OUTPUT
 
   deploy:
     name: Deploy
