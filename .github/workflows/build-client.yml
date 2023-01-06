@@ -24,25 +24,3 @@ jobs:
           name: app-client-docker-image
           path: app-client.${{ github.event.number }}.tar
           retention-days: 1
-
-  job1:
-    name: J1
-    runs-on: ubuntu-latest
-    outputs:
-      test-var: ${{ steps.step_one.outputs.test-var }}
-      test-var-bool: ${{ steps.step_two.outputs.test-var-bool }}
-    steps:
-      - run: echo "test-var=777" >> $GITHUB_OUTPUT
-        id: step_one
-      - run: echo "test-var-bool=true" >> $GITHUB_OUTPUT
-        id: step_two
-
-  job2:
-    name: J2
-    runs-on: ubuntu-latest
-    needs: [job1]
-    steps:
-      - run: |
-          echo "${{ needs.job1.outputs.test-var }}"
-          echo "${{ needs.job1.outputs.test-var-bool }}"
-

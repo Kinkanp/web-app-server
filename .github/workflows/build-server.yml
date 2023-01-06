@@ -10,8 +10,6 @@ jobs:
     name: Build docker image
     runs-on: ubuntu-latest
     steps:
-      - name: Debug
-        run: echo '${{ toJSON(github) }}'
       - uses: actions/checkout@v2
       - name: Build
         run: docker build -t ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }} .

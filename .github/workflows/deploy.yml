@@ -15,8 +15,6 @@ jobs:
       - uses: 8BitJonny/gh-get-current-pr@2.2.0
         id: PR
 
-      - run: echo "Your PR number is ${{ steps.PR.outputs.number }} and its JSON is ${{ steps.PR.outputs.pr }}"
-
       - uses: dawidd6/action-download-artifact@v2
         with:
           pr: ${{ steps.PR.outputs.number }}
@@ -101,8 +99,6 @@ jobs:
           docker pull ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:${{ github.sha }}
           docker tag ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:${{ github.sha }} ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:latest
           docker push ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:latest
-
-      - run: echo '${{ needs.publish_client.outputs.image-updated }}'
 
       - name: Set Client Latest Image
         if: ${{ needs.publish_client.outputs.image-updated == 'true' }}
