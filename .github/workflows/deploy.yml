@@ -17,6 +17,8 @@ jobs:
       - uses: kamatama41/get-pr-number-action@v0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Show the number
+        run: echo "PR number is ${{ steps.action.outputs.number }}"
       - uses: dawidd6/action-download-artifact@v2
         with:
           pr: ${{ steps.action.outputs.number }}
