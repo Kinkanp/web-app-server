@@ -12,6 +12,8 @@ jobs:
       - uses: actions/checkout@v2
       - name: Debug
         run: echo '${{ toJSON(github) }}'
+      - name: Debug2
+        run: echo ${{ github.event.commits[github.event.commits.length - 2].id }}
       - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
@@ -19,14 +21,14 @@ jobs:
           password: ${{ secrets.DHUB_TOKEN }}
       - name: Set server latest image
         run: |
-          docker pull ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:${{ github.event.commits[0].id }}
-          docker tag ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:${{ github.event.commits[0].id }} ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:latest
+          docker pull ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:${{ github.event.commits[github.event.commits.length - 2].id }}
+          docker tag ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:${{ github.event.commits[github.event.commits.length - 2].id }} ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:latest
           docker push ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:latest
         continue-on-error: true
       - name: Set client latest image
         run: |
-          docker pull ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_CLIENT_IMAGE }}:${{ github.event.commits[0].id }}
-          docker tag ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_CLIENT_IMAGE }}:${{ github.event.commits[0].id }} ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_CLIENT_IMAGE }}:latest
+          docker pull ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_CLIENT_IMAGE }}:${{ github.event.commits[github.event.commits.length - 2].id }}
+          docker tag ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_CLIENT_IMAGE }}:${{ github.event.commits[github.event.commits.length - 2].id }} ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_CLIENT_IMAGE }}:latest
           docker push ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_CLIENT_IMAGE }}:latest
         continue-on-error: true
       - name: Install SSH Key
