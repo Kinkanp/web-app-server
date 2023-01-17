@@ -9,13 +9,13 @@ import {
 } from '../../common/errors';
 import { isDatabaseError } from '../../common/database';
 import { inject, injectable } from 'inversify';
-import { ILogger, LOGGER } from '../../common/logger';
+import { IAppLogger, LOGGER } from '../../common/logger';
 import { APP_CONFIG, AppConfig } from '../../common/config';
 
 @injectable()
 export class HttpExceptionHandler implements ExceptionHandler {
   constructor(
-    @inject(LOGGER) private logger: ILogger,
+    @inject(LOGGER) private logger: IAppLogger,
     @inject(APP_CONFIG) private config: AppConfig,
   ) {}
 

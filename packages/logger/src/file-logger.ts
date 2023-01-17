@@ -1,7 +1,7 @@
 import fs from 'fs/promises';
-import { LoggerMessage, LogSeverity, logSeverityPrefixMap } from './logger.model';
-import { debounce } from '../utils';
+import { LOGGER_SEPARATOR, LoggerMessage, LogSeverity, logSeverityPrefixMap } from './logger.model';
 import { logErrorToConsole } from './console-logger';
+import { debounce } from './utils/debounce';
 
 interface FileLoggerOptions {
   path: string;
@@ -37,7 +37,7 @@ export class FileLogger {
 
   private writeFromQueue(): void {
     const logs = this.logQueue.map(([severity, ...message]) => {
-      return `${logSeverityPrefixMap[severity as LogSeverity]}: ${message}`
+      return `${logSeverityPrefixMap[severity as LogSeverity]}: ${message.join(LOGGER_SEPARATOR)}`
     }).reduce((messages, message) => messages += `${message}\n`, '');
 
     this.logQueue = [];

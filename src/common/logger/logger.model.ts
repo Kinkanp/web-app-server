@@ -1,31 +1,8 @@
-export const LOGGER = Symbol('App logger');
+import { LoggerMessage } from '@packages/logger';
 
-export type LoggerMessage = any[];
-
-export interface ILogger {
+export interface IAppLogger {
   info(scope: string, ...message: LoggerMessage): void;
   error(...message: LoggerMessage): void;
   warning(...message: LoggerMessage): void;
   debug(...message: LoggerMessage): void;
-}
-
-export interface LoggerOptions {
-  logsPath: string;
-  debug: boolean;
-  logToConsole: boolean;
-  logToFile: boolean;
-}
-
-export enum LogSeverity {
-  INFO,
-  WARN,
-  ERROR,
-  DEBUG
-}
-
-export const logSeverityPrefixMap = {
-  [LogSeverity.INFO]: 'INFO',
-  [LogSeverity.WARN]: 'WARN',
-  [LogSeverity.ERROR]: 'ERROR',
-  [LogSeverity.DEBUG]: 'DEBUG'
 }

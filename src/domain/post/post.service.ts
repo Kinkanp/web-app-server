@@ -3,7 +3,7 @@ import { Post } from './post.entity';
 import { PostRepository } from './post.repository';
 import { CreatePostParams, UpdatePostParams } from './post.models';
 import { PostValidator } from './post-validator';
-import { ILogger, LOGGER } from '../../common/logger';
+import { LOGGER, IAppLogger } from '../../common/logger';
 import { ForbiddenError, NotFoundError } from '../../common/errors';
 import { UserPublic } from '../../aggregation/user';
 
@@ -12,7 +12,7 @@ export class PostService {
   constructor(
     @inject(PostRepository) private postRepository: PostRepository,
     @inject(PostValidator) private postValidator: PostValidator,
-    @inject(LOGGER) private logger: ILogger,
+    @inject(LOGGER) private logger: IAppLogger,
   ) {
   }
 

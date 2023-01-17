@@ -1,4 +1,4 @@
-import { LoggerMessage, LogSeverity, logSeverityPrefixMap } from './logger.model';
+import { LOGGER_SEPARATOR, LoggerMessage, LogSeverity, logSeverityPrefixMap } from './logger.model';
 
 const colors = {
   [LogSeverity.ERROR]: '\x1b[31m%s\x1b[0m',
@@ -10,7 +10,7 @@ const colors = {
 export function logToConsole(severity: LogSeverity, ...message: LoggerMessage): void {
   const color = colors[severity];
 
-  console.log(color, `${logSeverityPrefixMap[severity]}: `, ...message);
+  console.log(color, `${logSeverityPrefixMap[severity]}: `, message.join(LOGGER_SEPARATOR));
 }
 
 export function logErrorToConsole(...message: LoggerMessage) {

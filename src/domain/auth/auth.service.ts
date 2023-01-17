@@ -13,14 +13,14 @@ import { AUTH_SERVICE_HELPER, UserPublic } from '../../aggregation/auth';
 import { APP_CONFIG, AppConfig } from '../../common/config';
 import { Uuid, UUID } from '../../common/uuid';
 import { Jwt, JWT } from '../../common/jwt';
-import { ILogger, LOGGER } from '../../common/logger';
+import { IAppLogger, LOGGER } from '../../common/logger';
 
 @injectable()
 export class AuthService {
   constructor(
     @inject(APP_CONFIG) private readonly config: AppConfig,
     @inject(CRYPTO) private readonly crypto: ICrypto,
-    @inject(LOGGER) private readonly logger: ILogger,
+    @inject(LOGGER) private readonly logger: IAppLogger,
     @inject(UUID) private readonly uuid: Uuid,
     @inject(JWT) private readonly jwt: Jwt,
     @inject(AuthRepository) private readonly authRepository: AuthRepository,

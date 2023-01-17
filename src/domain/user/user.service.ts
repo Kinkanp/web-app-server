@@ -3,7 +3,7 @@ import { UserRepository } from './user.repository';
 import { CreateUserParams } from './user.models';
 import { inject, injectable } from 'inversify';
 import { InvalidParamsError, NotFoundError } from '../../common/errors';
-import { ILogger, LOGGER } from '../../common/logger';
+import { IAppLogger, LOGGER } from '../../common/logger';
 import { CRYPTO, ICrypto } from '../../common/crypto';
 import { excludeFields } from '../../common/utils';
 import { UserValidator } from './user-validator';
@@ -15,7 +15,7 @@ export class UserService {
   constructor(
     @inject(UserRepository) private userRepository: UserRepository,
     @inject(UserValidator) private userValidator: UserValidator,
-    @inject(LOGGER) private logger: ILogger,
+    @inject(LOGGER) private logger: IAppLogger,
     @inject(CRYPTO) private crypto: ICrypto,
   ) {
   }

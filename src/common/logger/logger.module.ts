@@ -1,10 +1,25 @@
-import { AppModule } from '@packages/ioc';
-import { Logger } from './logger';
-import { ConfigModule } from '../config';
-import { LOGGER } from './logger.model';
+import { AppModule, injectModule } from '@packages/ioc';
+import { APP_CONFIG, ConfigModule } from '../config';
+import { ILogger, Logger } from '@packages/logger';
 
-export class LoggerModule extends AppModule {
+export const LOGGER = Symbol('App logger');
+
+export class LoggerModule extends AppModule<{ [LOGGER]: ILogger }> {
   protected imports = [ConfigModule];
-  protected declares = [{ map: LOGGER, to: Logger }];
+  protected declares = [
+    {
+      map: LOGGER,
+      to: () => {
+        const config = injectModule(ConfigModule).import(APP_CONFIG);
+
+        return new Logger({
+          logsPath: config.app.logsPath,
+          logToConsole: true,
+          logToFile: true,
+          debug: config.environment.isDev,
+        })
+      }
+    }
+  ];
   protected exports = [LOGGER];
 }

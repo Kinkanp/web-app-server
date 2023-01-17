@@ -1,6 +1,6 @@
 import * as http from 'http';
 import { inject, injectable, LazyServiceIdentifer } from 'inversify';
-import { ILogger, LOGGER } from '../../common/logger';
+import { IAppLogger, LOGGER } from '../../common/logger';
 import { HttpServer, HttpServerConfig, ExceptionHandler, Routes } from '@packages/http-server';
 import { APP_CONFIG, AppConfig } from '../../common/config';
 import { HTTP_EXCEPTION_HANDLER } from './http.module';
@@ -11,7 +11,7 @@ export class AppHttpServer {
 
   constructor(
     @inject(APP_CONFIG) private config: AppConfig,
-    @inject(LOGGER) private logger: ILogger,
+    @inject(LOGGER) private logger: IAppLogger,
     @inject(new LazyServiceIdentifer(() => HTTP_EXCEPTION_HANDLER)) private exceptionHandler: ExceptionHandler,
   ) {
   }
