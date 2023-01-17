@@ -5,6 +5,8 @@ import { HttpRouting } from '../routing/routing';
 import { ClientErrorResponse, InternalErrorResponse, SuccessResponse } from '../responses';
 import { RequestContext } from '../request-context/request-context';
 import { v4 as uuidv4 } from 'uuid';
+import { CommonHttpResponse } from '../responses/common/common-response';
+import { getIpAddressFromRequest } from '../utils/utils';
 
 export class HttpServer {
   private server: http.Server;
@@ -54,11 +56,12 @@ export class HttpServer {
   private async handleRequest(req: HttpRequest, res: HttpResponse): Promise<void> {
     const { handler, guards, dynamicParams } = this.routing.match(req);
     const requestId = uuidv4();
+    const ip = getIpAddressFromRequest(req);
 
-    this.logger?.info(`Method: ${req.method}, URL: ${req.url}, IP: ${req.socket.remoteAddress}, rid: ${requestId}`);
+    this.logger?.info(`rid: ${requestId}, Method: ${req.method}, URL: ${req.url}, IP: ${ip},`);
 
     if (handler) {
-      const context = new RequestContext(requestId);
+      const context = new RequestContext({ rid: requestId, ip });
 
       try {
         await this.routing.runGuards(guards, { req, res, context });
@@ -67,7 +70,7 @@ export class HttpServer {
         this.handleRouteError(res, error as Error);
       }
     } else {
-      new ClientErrorResponse(res).status(404).message('Not Found').send();
+      this.sendResponse(new ClientErrorResponse(res).status(404).message('Not Found'))
     }
 
     this.logger?.info(`rid end: ${requestId}`);
@@ -81,9 +84,9 @@ export class HttpServer {
     context: RequestContext
   ): Promise<void> {
     try {
-      const response = await handler({ req, res, params: dynamicParams, context });
+      const data = await handler({ req, res, params: dynamicParams, context });
 
-      new SuccessResponse(res).status(200).send(response);
+      this.sendResponse(new SuccessResponse(res).status(200), data)
     } catch (error) {
       this.handleRouteError(res, error as Error);
     }
@@ -102,6 +105,11 @@ export class HttpServer {
   }
 
   private throwInternalError(res: HttpResponse): void {
-    new InternalErrorResponse(res).status(500).send();
+    this.sendResponse(new InternalErrorResponse(res).status(500));
+  }
+
+  private sendResponse<T extends number>(response: CommonHttpResponse<T>, data?: unknown): void {
+    response.send(data);
+    this.logger?.info(`response ${response}`);
   }
 }

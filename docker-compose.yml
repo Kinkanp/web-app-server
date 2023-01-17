@@ -16,6 +16,8 @@ services:
       - db
   client:
     image: kinkan1/web-app-client
+    depends_on:
+      - server
     networks:
       - client
     ports:
@@ -35,6 +37,12 @@ services:
       PGDATA: /var/lib/postgresql/data
     ports:
       - "5432:5432"
+#  redis:
+#    image: redis:7.0.7
+#    networks:
+#      - server
+#    ports:
+#      - "6379:6379"
 
 networks:
   client:

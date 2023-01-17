@@ -21,7 +21,8 @@ export class AuthGuard implements Guard {
     }
 
     const bearer = 'Bearer ';
-    const user = await this.helper.authenticate(accessToken.substring(bearer.length));
+    const token = accessToken.substring(bearer.length);
+    const user = await this.helper.authenticate(token);
 
     if (user) {
       context.set('user', user);

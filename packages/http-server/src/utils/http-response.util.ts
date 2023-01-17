@@ -3,6 +3,7 @@ import { HttpResponse } from '../server';
 export class HttpResponseUtil {
   private code: number;
   private contentTypeHeader: string;
+  private data: unknown;
 
   constructor(private res: HttpResponse) {}
 
@@ -19,11 +20,19 @@ export class HttpResponseUtil {
   }
 
   public send(data?: unknown): this {
-    const formattedData = this.formatData(data);
+    this.data = data;
     this.res.writeHead(this.code, { 'Content-type': this.contentTypeHeader });
-    this.res.end(formattedData)
+    this.res.end(this.formatData(data))
 
     return this;
+  }
+
+  public get() {
+    return {
+      data: this.data,
+      contentType: this.contentTypeHeader,
+      status: this.code
+    };
   }
 
   private formatData(data: unknown): string | number | boolean | symbol | null {

@@ -9,8 +9,8 @@ import {
 import { Validator } from '../../../../common/validation';
 
 interface AuthServiceModel {
-  login(params: LoginParams): Promise<LoginResponse>;
-  refresh(refreshToken: string): Promise<AccessTokensResponse>;
+  login(params: LoginParams, ip: string): Promise<LoginResponse>;
+  refresh(refreshToken: string, ip: string): Promise<AccessTokensResponse>;
   register(params: RegisterParams): Promise<UserPublic>;
   logout(user: UserPublic): Promise<void>;
 }
@@ -19,21 +19,21 @@ export class AuthController {
   constructor(private authService: AuthServiceModel) {
   }
 
-  public async login(req: HttpRequest): Promise<LoginResponse> {
+  public async login(req: HttpRequest, ip: string): Promise<LoginResponse> {
     const params = await new HttpRequestUtil(req).getData<LoginParams>();
     const { username, password } = Validator.object<LoginParams>(params, {
       username: { type: 'string' },
       password: { type: 'string' },
     });
 
-    return this.authService.login({ username, password });
+    return this.authService.login({ username, password }, ip);
   }
 
-  public async refresh(req: HttpRequest): Promise<AccessTokensResponse> {
+  public async refresh(req: HttpRequest, ip: string): Promise<AccessTokensResponse> {
     const params = await new HttpRequestUtil(req).getData<{ refreshToken: string }>();
     const refreshToken = Validator.string(params.refreshToken);
 
-    return this.authService.refresh(refreshToken);
+    return this.authService.refresh(refreshToken, ip);
   }
 
   public async register(req: HttpRequest): Promise<UserPublic> {
