@@ -49,6 +49,6 @@ jobs:
           envkey_JWT_SECRET: ${{ secrets.JWT_SECRET }}
           envkey_JWT_EXPIRES_IN: ${{ secrets.JWT_EXPIRES_IN }}
       - name: Test
-        run: docker-compose run server npm test
+        run: docker compose run server npm test
       - name: Test:e2e
-        run: docker-compose run server npm run test:e2e
+        run: docker compose run server npm run test:e2e

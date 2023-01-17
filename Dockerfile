@@ -10,7 +10,7 @@ COPY . .
 
 EXPOSE 8085
 
-RUN npm i @packages/http-server @packages/ioc
+RUN npm i @packages/http-server @packages/ioc @packages/logger
 RUN npm run models:generate
 RUN npm run build
 

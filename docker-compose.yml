@@ -5,6 +5,7 @@ services:
     image: kinkan1/web-app-server
     entrypoint: ["./bin/setup-db.sh"]
     command: ["node", "dist/main.js"]
+    container_name: web_app_server
     build:
       context: .
     networks:
@@ -16,6 +17,7 @@ services:
       - db
   client:
     image: kinkan1/web-app-client
+    container_name: web_app_client
     depends_on:
       - server
     networks:
@@ -26,6 +28,7 @@ services:
   db:
     image: postgres:15-alpine
     restart: always
+    container_name: web_app_db
     networks:
       - server
     volumes:

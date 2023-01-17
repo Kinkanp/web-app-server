@@ -4,7 +4,7 @@ import { HTTP_SERVER, HttpModule } from './transport/http';
 import { UserModule } from './aggregation/user';
 import { DatabaseModule, DB_CONNECTION } from './common/database';
 import { ConfigModule } from './common/config';
-import { logErrorToConsole, LoggerModule } from './common/logger';
+import { LoggerModule } from './common/logger';
 import { AuthModule } from './aggregation/auth';
 import { CryptoModule } from './common/crypto';
 import { UuidModule } from './common/uuid';
@@ -13,6 +13,7 @@ import { getGuardModules } from './transport/http/guards';
 import { injectModule, registerModules } from '@packages/ioc';
 import { Routes } from '@packages/http-server';
 import { PostModule } from './aggregation/post';
+import { logErrorToConsole } from '@packages/logger';
 
 export class App {
   static {

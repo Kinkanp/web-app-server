@@ -1,20 +1,17 @@
-import { inject, injectable } from 'inversify';
-import { APP_CONFIG, AppConfig } from '../config';
 import { logToConsole } from './console-logger';
 import { ILogger, LoggerMessage, LoggerOptions, LogSeverity } from './logger.model';
 import { FileLogger } from './file-logger';
 
-@injectable()
 export class Logger implements ILogger {
   private options: LoggerOptions;
   private readonly fileLogger: FileLogger | null;
 
   constructor(
-    @inject(APP_CONFIG) config: AppConfig
+    config: LoggerOptions
   ) {
     this.options = {
-      debug: config.environment.isDev,
-      logsPath: config.app.logsPath,
+      debug: config.debug,
+      logsPath: config.logsPath,
       logToConsole: true,
       logToFile: true
     };

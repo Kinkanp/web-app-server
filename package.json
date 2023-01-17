@@ -25,7 +25,8 @@
   },
   "workspaces": [
     "packages/ioc",
-    "packages/http-server"
+    "packages/http-server",
+    "packages/logger"
   ],
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
