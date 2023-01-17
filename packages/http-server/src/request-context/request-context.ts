@@ -2,13 +2,15 @@ type ContextValue<TRequestContext> = Pick<TRequestContext, keyof TRequestContext
 
 export interface RequestContextDefaultValues {
   rid: string;
+  ip: string;
 }
 
 export class RequestContext<TRequestContext = unknown> {
   private value = new Map<string, ContextValue<TRequestContext>>();
 
-  constructor(rid: string) {
-    this.value.set('rid', rid as unknown as ContextValue<TRequestContext>);
+  constructor(params: { rid: string, ip: string }) {
+    this.value.set('rid', params.rid as unknown as ContextValue<TRequestContext>);
+    this.value.set('ip', params.ip as unknown as ContextValue<TRequestContext>);
   }
 
   public set(key: string, value: TRequestContext[keyof TRequestContext]): void {

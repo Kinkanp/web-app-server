@@ -6,7 +6,7 @@ import { Session } from './auth.model';
 export class AuthRepository {
   constructor(@inject(DB_CONNECTION) private connection: DBConnection) {}
 
-  public saveRefreshToken(data: { userId: number; refreshToken: string }): Promise<Session> {
+  public saveRefreshToken(data: { userId: number; refreshToken: string, ip: string }): Promise<Session> {
     return this.connection.sessionModel.create({ data });
   }
 

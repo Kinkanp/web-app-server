@@ -22,7 +22,7 @@ const createAuthGuard = (helper: AuthGuardHelper) => {
 const createGuardParams = (token = '') => {
   const authorization = `Bearer ${token}`;
   const params = {
-    context: new RequestContext(),
+    context: new RequestContext({ rid: '123', ip: '192.168.0.1' }),
     req: { headers: { authorization } } as HttpRequest
   } as GuardParams<RequestContextValues>;
 

@@ -23,6 +23,7 @@ model SessionModel {
   createdAt    DateTime  @default(now()) @map("created_at")
   updatedAt    DateTime  @updatedAt @map("updated_at")
   user         UserModel @relation(fields: [userId], references: [id])
+  ip           String?
   userId       Int       @map("user_id")
   refreshToken String    @map("refresh_token")
 

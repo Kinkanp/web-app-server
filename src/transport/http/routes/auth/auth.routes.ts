@@ -13,12 +13,12 @@ export function getAuthRoutes(): AppRoutes {
     {
       path: '/auth/login',
       method: 'POST',
-      handler: ({ req }) => auth.login(req)
+      handler: ({ req, context }) => auth.login(req, context.get('ip'))
     },
     {
       path: '/auth/refresh',
       method: 'POST',
-      handler: ({ req }) => auth.refresh(req)
+      handler: ({ req, context }) => auth.refresh(req, context.get('ip'))
     },
     {
       path: '/auth/register',

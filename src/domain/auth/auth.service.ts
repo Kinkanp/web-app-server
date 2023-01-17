@@ -28,7 +28,7 @@ export class AuthService {
   ) {
   }
 
-  public async login(params: LoginParams): Promise<LoginResponse> {
+  public async login(params: LoginParams, ip: string): Promise<LoginResponse> {
     const user = await this.helper.findUserByUsername(params.username);
 
     if (!user) {
@@ -43,7 +43,7 @@ export class AuthService {
 
     const { accessToken, refreshToken } = this.createAccessTokens(user.id);
 
-    await this.authRepository.saveRefreshToken({ userId: user.id, refreshToken });
+    await this.authRepository.saveRefreshToken({ userId: user.id, refreshToken, ip });
 
     this.logger.info('Auth', `User ${user.id} login`);
 
@@ -54,7 +54,7 @@ export class AuthService {
     };
   }
 
-  public async refresh(refreshToken: string): Promise<AccessTokensResponse> {
+  public async refresh(refreshToken: string, ip: string): Promise<AccessTokensResponse> {
     const session = await this.authRepository.findSessionByRefreshToken(refreshToken);
 
     if (!session) {
@@ -71,7 +71,8 @@ export class AuthService {
 
     await this.authRepository.saveRefreshToken({
       userId: session.userId,
-      refreshToken: newTokens.refreshToken
+      refreshToken: newTokens.refreshToken,
+      ip
     });
 
     this.logger.info('Auth', `User ${session.userId} has used refreshed token`);

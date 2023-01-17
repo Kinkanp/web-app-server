@@ -6,6 +6,8 @@ export abstract class CommonHttpResponse<TCode extends number> {
   protected code: TCode;
   protected _contentType = 'application/json';
 
+  private response: HttpResponseUtil;
+
   constructor(private res: HttpResponse) {}
 
   public abstract get(data?: unknown): SuccessResponseModel<TCode> | ErrorResponseModel;
@@ -17,9 +19,16 @@ export abstract class CommonHttpResponse<TCode extends number> {
   }
 
   public send(data?: unknown): void {
-    new HttpResponseUtil(this.res)
+    this.response = new HttpResponseUtil(this.res)
       .contentType(this._contentType)
       .status(this.code)
       .send(this.get(data));
+  }
+
+  public toString(): string {
+    const response =  this.response.get();
+    const dataType = Object.prototype.toString.call(response.data);
+
+    return `dataType: ${dataType}, status: ${response.status}`;
   }
 }
