@@ -6,10 +6,13 @@ import { AppModule } from '../../../src/ioc.module';
 export class WeaponModule extends AppModule {
   protected exports = [TYPES.Weapon];
   protected imports = [LoggerModule];
+  protected declares = [
+    { map: TYPES.Weapon, to: Katana }
+  ]
 
-  public register() {
-    this.bind(TYPES.Weapon).to(Katana);
-  }
+  // public register() {
+  //   this.bind(TYPES.Weapon).to(Katana);
+  // }
 }
 
 @injectable()

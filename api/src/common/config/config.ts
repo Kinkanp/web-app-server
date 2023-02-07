@@ -11,6 +11,9 @@ export function getAppConfig(): AppConfig {
       password: process.env.DB_PASSWORD as string,
       port: parseInt(process.env.DB_PORT as string, 10) as number,
     },
+    memoryStorage: {
+      url: process.env.MEMORY_STORAGE_URL as string
+    },
     app: {
       port: parseInt(process.env.APP_PORT as string, 10),
       baseUrl: process.env.APP_BASE_URL as string,

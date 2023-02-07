@@ -7,10 +7,13 @@ import { SuperPower } from './index';
 export class SuperSpeedModule extends AppModule {
   protected exports = [TYPES.Superpower];
   protected imports = [LoggerModule];
+  public declares = [
+    { map: TYPES.Superpower, to: SuperSpeed }
+  ]
 
-  public register() {
-    this.bind(TYPES.Superpower).to(SuperSpeed);
-  }
+  // public register() {
+  //   this.bind(TYPES.Superpower).to(SuperSpeed);
+  // }
 }
 
 @injectable()

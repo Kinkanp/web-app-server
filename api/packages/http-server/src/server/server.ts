@@ -1,5 +1,12 @@
 import * as http from 'http';
-import { HttpServerConfig, HttpRequest, HttpResponse, ExceptionHandler, HttpLogger } from './server.model';
+import {
+  HttpServerConfig,
+  HttpRequest,
+  HttpResponse,
+  ExceptionHandler,
+  HttpLogger,
+  HttpInterceptor, HttpInterceptorParams
+} from './server.model';
 import { RouteDynamicParams, RouteHandler, Routes } from '../routing/routing.model';
 import { HttpRouting } from '../routing/routing';
 import { ClientErrorResponse, InternalErrorResponse, SuccessResponse } from '../responses';
@@ -13,6 +20,7 @@ export class HttpServer {
   private routing: HttpRouting;
   private exceptionHandler: ExceptionHandler;
   private logger?: HttpLogger;
+  private requestInterceptors: HttpInterceptor[] = [];
 
   constructor(private config: HttpServerConfig) {
   }
@@ -48,7 +56,12 @@ export class HttpServer {
     return this;
   }
 
-  public setExceptionHandlers(exceptionHandler: ExceptionHandler): this {
+  public setRequestInterceptor(interceptor: HttpInterceptor): this {
+    this.requestInterceptors.push(interceptor);
+    return this;
+  }
+
+  public setExceptionHandler(exceptionHandler: ExceptionHandler): this {
     this.exceptionHandler = exceptionHandler;
     return this;
   }
@@ -57,15 +70,18 @@ export class HttpServer {
     const { handler, guards, dynamicParams } = this.routing.match(req);
     const requestId = uuidv4();
     const ip = getIpAddressFromRequest(req);
+    const context = new RequestContext({ rid: requestId, ip });
 
-    this.logger?.info(`rid: ${requestId}, Method: ${req.method}, URL: ${req.url}, IP: ${ip},`);
+    this.logger?.info(`rid: ${requestId}, Method: ${req.method}, URL: ${req.url}, IP: ${ip}, Time: ${new Date().toISOString()}`);
 
     if (handler) {
-      const context = new RequestContext({ rid: requestId, ip });
-
       try {
         await this.routing.runGuards(guards, { req, res, context });
-        await this.handleRouteResponse(handler, req, res, dynamicParams, context);
+        await this.runInterceptors({ req, context, res });
+
+        if (!res.writableEnded) {
+          await this.handleRouteResponse(handler, req, res, dynamicParams, context);
+        }
       } catch(error) {
         this.handleRouteError(res, error as Error);
       }
@@ -111,5 +127,17 @@ export class HttpServer {
   private sendResponse<T extends number>(response: CommonHttpResponse<T>, data?: unknown): void {
     response.send(data);
     this.logger?.info(`response ${response}`);
+  }
+
+  private async runInterceptors(params: HttpInterceptorParams): Promise<void> {
+    try {
+      console.log('running interceptors');
+      if (this.requestInterceptors) {
+        const promises = this.requestInterceptors.map(interceptor => interceptor.intercept(params))
+        await Promise.all(promises);
+      }
+    } catch(error) {
+      this.logger?.error(`request interceptor error: ${error}`);
+    }
   }
 }

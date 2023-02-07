@@ -12,10 +12,13 @@ export interface IBattleField {
 
 export class BattleFieldModule extends AppModule {
   public imports = [NinjaModule, BerserkModule, LoggerModule];
+  public declares = [
+    { map: TYPES.BattleField, to: BattleField }
+  ];
 
-  public register() {
-    this.bind(TYPES.BattleField).to(BattleField).inSingletonScope();
-  }
+  // public register() {
+  //   this.bind(TYPES.BattleField).to(BattleField).inSingletonScope();
+  // }
 
   public fight(): void {
     this.inject<IBattleField>(TYPES.BattleField).fight();

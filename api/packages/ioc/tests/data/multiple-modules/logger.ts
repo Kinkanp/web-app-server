@@ -4,10 +4,9 @@ import { injectable } from 'inversify';
 
 export class LoggerModule extends AppModule {
   protected exports = [TYPES.Logger];
-
-  public register() {
-    this.bind(TYPES.Logger).to(Logger);
-  }
+  public declares = [
+    { map: TYPES.Logger, to: Logger }
+  ]
 }
 
 export interface ILogger {

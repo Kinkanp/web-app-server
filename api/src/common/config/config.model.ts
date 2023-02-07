@@ -9,6 +9,9 @@ export interface AppConfig {
         password: string;
         port: number;
     },
+    memoryStorage: {
+        url: string
+    },
     app: {
         port: number;
         baseUrl: string;

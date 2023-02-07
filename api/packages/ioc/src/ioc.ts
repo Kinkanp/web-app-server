@@ -22,7 +22,7 @@ export class IoC {
     return this.getInstanceOf(module) as InstanceType<T>;
   }
 
-  static register(modules: ModuleConstructor[]): void {
+  static async register(modules: ModuleConstructor[]): Promise<void> {
     this.builtModules = this.buildModules(modules);
     const orderedModule = this.orderModulesByImports(this.builtModules);
 
@@ -43,7 +43,7 @@ export class IoC {
         }
       }
 
-      module[APP_MODULE_INIT_SYMBOL](container);
+      await module[APP_MODULE_INIT_SYMBOL](container);
 
       // prevent iteration if debug is off
       if (this.options.debug) {

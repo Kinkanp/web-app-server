@@ -14,12 +14,16 @@ import {
 import { isClass } from './utils';
 
 export abstract class AppModule<TExports = any> {
-  public register() {
+  public async register(): Promise<void> {
     if (!this.declares.length) {
       throw new Error(`Module ${this.constructor.name} doesn't declare any values`);
     }
 
-    this.declares.forEach(declare => this.bindDeclaredValues(declare));
+    for (const declare of this.declares) {
+      await this.bindDeclaredValues(declare);
+    }
+
+    // this.declares.forEach(declare => this.bindDeclaredValues(declare));
   }
 
   protected exports: AppModuleExport = [];
@@ -39,9 +43,9 @@ export abstract class AppModule<TExports = any> {
     return this.imports;
   }
 
-  public [APP_MODULE_INIT_SYMBOL](container: Container): void {
+  public async [APP_MODULE_INIT_SYMBOL](container: Container): Promise<void> {
     this.setContainer(container);
-    this.register();
+    await this.register();
     this.initialize();
   }
 
@@ -89,14 +93,23 @@ export abstract class AppModule<TExports = any> {
     });
   }
 
-  private bindDeclaredValues(declare: Declare): void {
+  private async bindDeclaredValues(declare: Declare): Promise<void> {
     if (!Object.hasOwn(declare, 'map')) {
       this.bind(declare as DeclareDirectValue).toSelf();
+      return;
+    }
+
+    const mappedDeclare = declare as DeclareMappedValue;
+    const { map } = mappedDeclare;
+
+    if (mappedDeclare.toAsync) {
+      const to = await mappedDeclare.toAsync();
+      this.bind(map).toConstantValue(to);
 
       return;
     }
 
-    const { to, map } = declare as DeclareMappedValue;
+    const to = mappedDeclare.to;
 
     if (isClass(to)) {
       this.bind(map).to(to);

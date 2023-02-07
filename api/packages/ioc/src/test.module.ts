@@ -14,7 +14,7 @@ interface RegisterModuleFnResult {
 export const createTestingModule = (register: RegisterModuleFn): AppModule => {
   @injectable()
   class TestModule extends AppModule {
-    public register() {
+    public async register() {
       const result = register(this.bind.bind(this));
 
       this.exports = result?.exports || [];

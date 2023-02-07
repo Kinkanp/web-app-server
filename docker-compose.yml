@@ -14,6 +14,7 @@ services:
       - client
     depends_on:
       - db
+      - redis
     volumes:
       - ./api/:/usr/src/app/
     restart: unless-stopped
@@ -32,6 +33,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
+  # TODO: do not expose ports to the host, should be available only for server
   db:
     image: postgres:15-alpine
     restart: always
@@ -46,8 +48,19 @@ services:
       POSTGRES_DB: $$DB_NAME
       POSTGRES_USER: $$DB_USER
       PGDATA: /var/lib/postgresql/data
+    expose:
+      - "5433"
     ports:
       - "5432:5432"
+
+  # TODO: do not expose ports to the host, should be available only for server
+  redis:
+    container_name: web_app_redis
+    image: redis:7.0.7
+    networks:
+      - server
+    ports:
+      - "6379:6379"
 
 networks:
   client:

@@ -1,1 +1,1 @@
-export { Routes, Guard, GuardParams, Controller } from './routing.model';
+export { Routes, Guard, GuardParams, Controller, RouteHandlerResponse } from './routing.model';

@@ -1,8 +1,10 @@
 import { HttpRequest, HttpResponse } from '../server';
 import { RequestContext } from '../request-context/request-context';
 
+export type HttpRequestMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+
 export interface Route<TRequestContext = unknown> {
-  method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE',
+  method: HttpRequestMethod,
   path: string;
   handler: RouteHandler<TRequestContext>;
   guards?: Guard[];

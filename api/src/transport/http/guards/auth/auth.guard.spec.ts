@@ -3,7 +3,7 @@ import { describe, expect, test, vitest } from 'vitest';
 import { createTestingModule } from '@packages/ioc';
 import { AuthGuard, AuthGuardHelper } from './auth.guard';
 import { AUTH_GUARD, AUTH_GUARD_HELPER } from './auth-guard.module';
-import { RequestContextValues } from '../../http.constants';
+import { HttpContextValues } from '../../http.constants';
 import { GuardParams, HttpRequest, RequestContext } from '@packages/http-server';
 import { UnauthorizedError } from '../../../../common/errors';
 
@@ -24,7 +24,7 @@ const createGuardParams = (token = '') => {
   const params = {
     context: new RequestContext({ rid: '123', ip: '192.168.0.1' }),
     req: { headers: { authorization } } as HttpRequest
-  } as GuardParams<RequestContextValues>;
+  } as GuardParams<HttpContextValues>;
 
   return { params, token };
 }
