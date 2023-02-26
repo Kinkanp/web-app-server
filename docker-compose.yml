@@ -14,7 +14,8 @@ services:
     env_file:
       - .env
     depends_on:
-      - db
+      - db_mysql
+      - db_postgres
   client:
     image: kinkan1/web-app-client
     container_name: web_app_client
@@ -25,21 +26,36 @@ services:
     ports:
       - "80:80"
       - "443:443"
-  db:
+  db_postgres:
     image: postgres:15-alpine
     restart: always
-    container_name: web_app_db
+    container_name: web_app_db_postgres
     networks:
       - server
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - postgres_db_data:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: $DB_PASSWORD
       POSTGRES_DB: $DB_NAME
       POSTGRES_USER: $DB_USER
       PGDATA: /var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "5433:5432"
+  db_mysql:
+    image: mysql:8.0.32
+    restart: always
+    container_name: web_app_db_mysql
+    networks:
+      - server
+    volumes:
+      - mysql_db_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+    ports:
+      - "3306:3306"
 #  redis:
 #    image: redis:7.0.7
 #    networks:
@@ -51,4 +67,5 @@ networks:
   client:
   server:
 volumes:
-  db_data:
+  postgres_db_data:
+  mysql_db_data:

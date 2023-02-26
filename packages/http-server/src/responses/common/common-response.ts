@@ -27,8 +27,7 @@ export abstract class CommonHttpResponse<TCode extends number> {
 
   public toString(): string {
     const response =  this.response.get();
-    const dataType = Object.prototype.toString.call(response.data);
 
-    return `dataType: ${dataType}, status: ${response.status}`;
+    return `Response status: ${response.status}`;
   }
 }

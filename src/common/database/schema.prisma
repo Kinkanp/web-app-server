@@ -3,18 +3,20 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DB_URL")
 }
 
 model UserModel {
-  id        Int            @id @default(autoincrement())
-  createdAt DateTime       @default(now()) @map("created_at")
-  updatedAt DateTime       @updatedAt @map("updated_at")
-  username  String         @unique
-  password  String
-  posts     PostModel[]
-  sessions  SessionModel[]
+  id            Int                  @id @default(autoincrement())
+  createdAt     DateTime             @default(now()) @map("created_at")
+  updatedAt     DateTime             @updatedAt @map("updated_at")
+  username      String               @unique
+  password      String
+  posts         PostModel[]
+  sessions      SessionModel[]
+  ProductReview ProductReviewModel[]
+  CartModel     CartModel[]
 
   @@map("users")
 }
@@ -40,4 +42,78 @@ model PostModel {
   authorId  Int       @map("author_id")
 
   @@map("posts")
+}
+
+model ProductModel {
+  id                     Int                         @id @default(autoincrement())
+  createdAt              DateTime                    @default(now()) @map("created_at")
+  updatedAt              DateTime                    @updatedAt @map("updated_at")
+  name            String
+  description            String
+  price                  Int
+  reviews                ProductReviewModel[]
+  carts                  ProductsOnCartsModel[]
+  products_on_categories ProductsOnCategoriesModel[]
+
+  @@map("products")
+}
+
+model ProductReviewModel {
+  author    UserModel    @relation(fields: [authorId], references: [id])
+  authorId  Int
+  product   ProductModel @relation(fields: [productId], references: [id])
+  productId Int
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  text      String
+  rating    Int
+
+  @@id([authorId, productId])
+  @@map("product_reviews")
+}
+
+enum CartStatus {
+  DRAFT
+  IN_PROCESS
+  COMPLETED
+}
+
+model CartModel {
+  id             Int                    @id @default(autoincrement())
+  user           UserModel              @relation(fields: [userId], references: [id])
+  userId         Int
+  status         CartStatus             @default(DRAFT)
+  createdAt      DateTime               @default(now()) @map("created_at")
+  updatedAt      DateTime               @updatedAt @map("updated_at")
+  products_carts ProductsOnCartsModel[]
+
+  @@map("carts")
+}
+
+model ProductsOnCartsModel {
+  cart      CartModel    @relation(fields: [cartId], references: [id])
+  cartId    Int
+  product   ProductModel @relation(fields: [productId], references: [id])
+  productId Int
+
+  @@id([cartId, productId])
+  @@map("products_carts")
+}
+
+model CategoryModel {
+  id                  Int                         @id @default(autoincrement())
+  name                String
+  products_categories ProductsOnCategoriesModel[]
+  @@map("categories")
+}
+
+model ProductsOnCategoriesModel {
+  category   CategoryModel @relation(fields: [categoryId], references: [id])
+  categoryId Int
+  product    ProductModel  @relation(fields: [productId], references: [id])
+  productId  Int
+
+  @@id([productId, categoryId])
+  @@map("products_categories")
 }
