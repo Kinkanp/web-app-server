@@ -14,6 +14,7 @@ import { injectModule, registerModules } from '@packages/ioc';
 import { Routes } from '@packages/http-server';
 import { PostModule } from './aggregation/post';
 import { logErrorToConsole } from '@packages/logger';
+import { ProductModule } from './aggregation/product/product.module';
 
 export class App {
   static {
@@ -51,7 +52,8 @@ export class App {
       // Domain
       UserModule,
       AuthModule,
-      PostModule
+      PostModule,
+      ProductModule
     ]);
   }
 

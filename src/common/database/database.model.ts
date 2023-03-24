@@ -5,7 +5,7 @@ import {
   PrismaClientUnknownRequestError,
   PrismaClientRustPanicError,
   PrismaClientValidationError
-} from '@prisma/client/runtime';
+} from '@prisma/client/runtime/library';
 
 export type DBConnection = PrismaClient;
 

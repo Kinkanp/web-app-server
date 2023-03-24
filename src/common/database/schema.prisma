@@ -17,6 +17,7 @@ model UserModel {
   sessions      SessionModel[]
   ProductReview ProductReviewModel[]
   CartModel     CartModel[]
+  OrderModel    OrderModel[]
 
   @@map("users")
 }
@@ -45,24 +46,58 @@ model PostModel {
 }
 
 model ProductModel {
-  id                     Int                         @id @default(autoincrement())
-  createdAt              DateTime                    @default(now()) @map("created_at")
-  updatedAt              DateTime                    @updatedAt @map("updated_at")
-  name            String
-  description            String
-  price                  Int
-  reviews                ProductReviewModel[]
-  carts                  ProductsOnCartsModel[]
-  products_on_categories ProductsOnCategoriesModel[]
+  id          Int                       @id @default(autoincrement())
+  createdAt   DateTime                  @default(now()) @map("created_at")
+  updatedAt   DateTime                  @updatedAt @map("updated_at")
+  name        String
+  description String
+  price       Int
+  discount    Int
+  reviews     ProductReviewModel[]
+  carts       ProductsOnCartsModel[]
+  categories  ProductsCategoriesModel[]
+  features    ProductsFeaturesModel[]
 
   @@map("products")
 }
 
+model ProductFeatureModel {
+  id               Int                        @id @default(autoincrement())
+  name             String
+  description      String?
+  category         ProductCategoryModel       @relation(fields: [categoryId], references: [id])
+  categoryId       Int                        @map("category_id")
+  values           ProductFeatureValueModel[]
+  productsFeatures ProductsFeaturesModel[]
+
+  @@map("product_features")
+}
+
+model ProductsFeaturesModel {
+  product   ProductModel @relation(fields: [productId], references: [id])
+  productId Int          @map("product_id")
+
+  feature   ProductFeatureModel @relation(fields: [featureId], references: [id])
+  featureId Int                 @map("feature_id")
+
+  @@id([productId, featureId])
+  @@map("products_features")
+}
+
+model ProductFeatureValueModel {
+  id        Int                 @id @default(autoincrement())
+  title     String
+  feature   ProductFeatureModel @relation(fields: [featureId], references: [id])
+  featureId Int                 @map("feature_id")
+
+  @@map("product_feature_values")
+}
+
 model ProductReviewModel {
   author    UserModel    @relation(fields: [authorId], references: [id])
-  authorId  Int
+  authorId  Int          @map("author_id")
   product   ProductModel @relation(fields: [productId], references: [id])
-  productId Int
+  productId Int          @map("product_id")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -74,45 +109,72 @@ model ProductReviewModel {
 }
 
 enum CartStatus {
-  DRAFT
-  IN_PROCESS
+  PENDING
   COMPLETED
 }
 
 model CartModel {
-  id             Int                    @id @default(autoincrement())
-  user           UserModel              @relation(fields: [userId], references: [id])
-  userId         Int
-  status         CartStatus             @default(DRAFT)
-  createdAt      DateTime               @default(now()) @map("created_at")
-  updatedAt      DateTime               @updatedAt @map("updated_at")
-  products_carts ProductsOnCartsModel[]
+  id        Int        @id @default(autoincrement())
+  status    CartStatus @default(PENDING)
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @updatedAt @map("updated_at")
+  sessionId String     @map("session_id")
+
+  productsCarts ProductsOnCartsModel[]
+  order         OrderModel[]
+  UserModel     UserModel?             @relation(fields: [userModelId], references: [id])
+  userModelId   Int?
 
   @@map("carts")
 }
 
 model ProductsOnCartsModel {
   cart      CartModel    @relation(fields: [cartId], references: [id])
-  cartId    Int
+  cartId    Int          @map("cart_id")
   product   ProductModel @relation(fields: [productId], references: [id])
-  productId Int
+  productId Int          @map("product_id")
 
   @@id([cartId, productId])
   @@map("products_carts")
 }
 
-model CategoryModel {
-  id                  Int                         @id @default(autoincrement())
-  name                String
-  products_categories ProductsOnCategoriesModel[]
+enum OrderStatus {
+  DRAFT
+  PENDING
+  CANCELED
+  COMPLETED
+}
+
+model OrderModel {
+  id        Int         @id @default(autoincrement())
+  createdAt DateTime    @default(now()) @map("created_at")
+  updatedAt DateTime    @updatedAt @map("updated_at")
+  user      UserModel   @relation(fields: [userId], references: [id])
+  userId    Int         @map("user_id")
+  cart      CartModel   @relation(fields: [cartId], references: [id])
+  cartId    Int         @map("cart_id")
+  status    OrderStatus @default(DRAFT)
+  rawPrice  Int         @map("raw_price")
+  discount  Int
+  price     Int
+
+  @@map("orders")
+}
+
+model ProductCategoryModel {
+  id                 Int                       @id @default(autoincrement())
+  name               String
+  productsCategories ProductsCategoriesModel[]
+  productFeature     ProductFeatureModel[]
+
   @@map("categories")
 }
 
-model ProductsOnCategoriesModel {
-  category   CategoryModel @relation(fields: [categoryId], references: [id])
-  categoryId Int
-  product    ProductModel  @relation(fields: [productId], references: [id])
-  productId  Int
+model ProductsCategoriesModel {
+  category   ProductCategoryModel @relation(fields: [categoryId], references: [id])
+  categoryId Int                  @map("category_id")
+  product    ProductModel         @relation(fields: [productId], references: [id])
+  productId  Int                  @map("product_id")
 
   @@id([productId, categoryId])
   @@map("products_categories")
