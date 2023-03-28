@@ -2,6 +2,8 @@ name: Build server
 
 on:
   pull_request:
+    branches:
+      - '!pdp'
     paths-ignore:
       - 'client/**'
 

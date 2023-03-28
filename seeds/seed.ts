@@ -18,7 +18,7 @@ async function createSeeds(): Promise<Seeds> {
   const sessions = await getSessionsSeed(connection, users);
   const postsWithUsers = await getPostsSeed(connection, users);
 
-  return { users, sessions, postsWithUsers};
+  return { users, sessions, postsWithUsers };
 }
 
 export async function runSeeds(): Promise<Seeds> {
@@ -34,7 +34,9 @@ export async function runSeeds(): Promise<Seeds> {
 }
 
 export async function clearSeeds(): Promise<number> {
-  return connection.$executeRaw`
-    TRUNCATE TABLE users CASCADE;
-  `;
+  // TODO: clean all tables at once
+  return connection
+          .$executeRaw`DELETE FROM sessions`
+          .then(() => connection.$executeRaw`DELETE FROM posts`)
+          .then(() => connection.$executeRaw`DELETE FROM users`);
 }

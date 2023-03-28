@@ -2,6 +2,8 @@ name: Build client
 
 on:
   pull_request:
+    branches:
+      - '!pdp'
     paths:
       - 'client/**'
 
