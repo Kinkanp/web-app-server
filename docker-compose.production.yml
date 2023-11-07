@@ -1,0 +1,12 @@
+version: '3.9'
+
+services:
+  server:
+    image: kinkan1/web-app-server
+    container_name: server
+#    entrypoint: ["sh", "-c", "ls -l"]
+#    entrypoint: ["./setup-db.sh"]
+    build:
+      context: .
+      dockerfile: ./docker/api/Dockerfile
+      target: production

@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Build
-        run: docker build -t ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }} .
+        run: docker build -t ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }} -f docker/api/Dockerfile  .
       - name: Save
         run: docker save ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }} -o app.${{ github.event.number }}.tar
       - name: Upload artifact
@@ -37,7 +37,7 @@ jobs:
       - name: Create .env file
         uses: SpicyPizza/create-envfile@v1.3
         with:
-          file_name: .env
+          file_name: api/.env
           envkey_DB_NAME: ${{ secrets.DB_NAME }}
           envkey_DB_USER: ${{ secrets.DB_USER }}
           envkey_DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
