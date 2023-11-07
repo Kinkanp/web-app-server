@@ -37,7 +37,7 @@ jobs:
       - name: Create .env file
         uses: SpicyPizza/create-envfile@v1.3
         with:
-          file_name: .env
+          file_name: api/.env
           envkey_DB_NAME: ${{ secrets.DB_NAME }}
           envkey_DB_USER: ${{ secrets.DB_USER }}
           envkey_DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
