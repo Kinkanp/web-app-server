@@ -1,7 +1,7 @@
 .idea
 /node_modules
-/dist
 .env
-/coverage
-/logs
-/packages/*/dist
+/api/packages/*/dist
+/api/node_modules
+/api/dist
+/api/logs

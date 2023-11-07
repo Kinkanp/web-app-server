@@ -1,13 +1,12 @@
 .idea
 .github
 
-Dockerfile
-node_modules
+docker
 npm-debug.log
 README.md
 
-logs
-coverage
-dist
-
 .env
+
+api/node_modules
+api/dist
+api/logs

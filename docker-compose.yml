@@ -2,22 +2,29 @@ version: '3.9'
 
 services:
   server:
-    image: kinkan1/web-app-server
-    entrypoint: ["./bin/setup-db.sh"]
-    command: ["node", "dist/main.js"]
-    container_name: web_app_server
+    image: kinkan1/web-app-server-dev
+    container_name: server_dev
+    command: npm run start
     build:
       context: .
+      dockerfile: ./docker/api/Dockerfile
+      target: development
     networks:
       - server
       - client
-    env_file:
-      - .env
     depends_on:
       - db
+    volumes:
+      - ./api/:/usr/src/app/
+    restart: unless-stopped
+    env_file: ./api/.env
+
   client:
     image: kinkan1/web-app-client
-    container_name: web_app_client
+    container_name: client
+    build:
+      context: .
+      dockerfile: ./docker/nginx/Dockerfile
     depends_on:
       - server
     networks:
@@ -28,24 +35,19 @@ services:
   db:
     image: postgres:15-alpine
     restart: always
-    container_name: web_app_db
+    container_name: db
     networks:
       - server
     volumes:
       - db_data:/var/lib/postgresql/data
+    env_file: ./api/.env
     environment:
-      POSTGRES_PASSWORD: $DB_PASSWORD
-      POSTGRES_DB: $DB_NAME
-      POSTGRES_USER: $DB_USER
+      POSTGRES_PASSWORD: $$DB_PASSWORD
+      POSTGRES_DB: $$DB_NAME
+      POSTGRES_USER: $$DB_USER
       PGDATA: /var/lib/postgresql/data
     ports:
       - "5432:5432"
-#  redis:
-#    image: redis:7.0.7
-#    networks:
-#      - server
-#    ports:
-#      - "6379:6379"
 
 networks:
   client:

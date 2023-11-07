@@ -1,0 +1,17 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "types": ["node"],
+    "outDir": "dist",
+    "declaration": false,
+    "composite": false
+  },
+  "include": ["src", "src/main.ts"],
+  "exclude": ["node_modules", "**/*.spec.ts"],
+  "references": [
+    { "path": "./packages/http-server" },
+    { "path": "./packages/ioc" },
+    { "path": "./packages/logger" }
+  ]
+}
