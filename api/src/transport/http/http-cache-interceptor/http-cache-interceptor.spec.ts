@@ -6,8 +6,7 @@ import { LOGGER } from '../../../common/logger';
 import { Logger, LoggerOptions } from '@packages/logger';
 import { HttpCacheInterceptor } from './http-cache.interceptor';
 import { APP_CONFIG } from '../../../common/config';
-import { HttpInterceptorParams } from '@packages/http-server';
-import { HttpInterceptorHandle } from '@packages/http-server/dist/src/server/interceptor-handle';
+import { HttpInterceptorParams, HttpInterceptorHandle } from '@packages/http-server';
 
 const appConfig = { memoryStorage: { ttlInSeconds: 1 } };
 
@@ -41,7 +40,7 @@ describe('HttpCacheInterceptor', () => {
     handleRun = vitest.fn().mockReturnValue(Promise.resolve(handleData));
     handle = new HttpInterceptorHandle(handleRun);
     cacheService.set.mockReturnValue(Promise.resolve())
-  })
+  });
 
   test('should return handle if no cache key provided', async () => {
     const interceptor = await createInterceptor(cacheService);

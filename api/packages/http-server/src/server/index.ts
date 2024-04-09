@@ -7,3 +7,4 @@ export {
   ExceptionHandler,
   HttpInterceptorParams
 } from './server.model';
+export * from './interceptor-handle'
