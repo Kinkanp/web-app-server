@@ -13,7 +13,7 @@ import { getGuardModules } from './transport/http/guards';
 import { injectModule, registerModules } from '@packages/ioc';
 import { Routes } from '@packages/http-server';
 import { logErrorToConsole } from '@packages/logger';
-import { CacheModule } from './common/caching/cache.module';
+import { CacheModule } from './common/caching';
 
 export class App {
   static {

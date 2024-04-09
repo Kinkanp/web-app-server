@@ -1,11 +1,11 @@
 .idea
 .github
 
-docker
 npm-debug.log
 README.md
 
 .env
+.data
 
 api/node_modules
 api/dist

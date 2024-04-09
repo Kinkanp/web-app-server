@@ -27,9 +27,17 @@ export class CacheService implements ICacheService {
     try {
       const dataString = JSON.stringify(data);
 
-      return this.memoryStorage.set(key, dataString).then();
+      return this.memoryStorage.set(key, dataString, { EX: options?.ttlInSeconds }).then();
     } catch {
       return Promise.resolve();
+    }
+  }
+
+  public async delete(key: string): Promise<void> {
+    try {
+      await this.memoryStorage.del(key);
+    } catch(e) {
+      return;
     }
   }
 }

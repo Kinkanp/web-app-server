@@ -28,4 +28,4 @@ export const logSeverityPrefixMap = {
   [LogSeverity.DEBUG]: 'DEBUG'
 }
 
-export const LOGGER_SEPARATOR = '.';
+export const LOGGER_SEPARATOR = ' ';

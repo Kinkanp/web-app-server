@@ -1,4 +1,4 @@
-FROM node:16.12-alpine as development
+FROM node:20 as development
 
 WORKDIR /usr/src/app
 
@@ -6,7 +6,7 @@ COPY ./api/package*.json ./
 
 RUN npm install
 
-COPY ./api .
+COPY /api .
 
 EXPOSE 8085
 

@@ -26,11 +26,15 @@ describe('inversion of control module', () => {
     expect(() => registerModules(modules)).not.toThrow();
   });
 
-  test.only('should register modules with fluent syntax', () => {
+  test('should register modules with fluent syntax', () => {
     const modules = [FluentSyntaxModule];
 
-    // TODO: check for results and not just function invoke
-    expect(() => registerModules(modules)).not.toThrow();
-    expect(() => injectModule(FluentSyntaxModule).import(FLUENT_SERVICE_C_SYMBOL)).not.toThrow();
+    expect(async () => {
+      await registerModules(modules);
+      injectModule(FluentSyntaxModule).import(FLUENT_SERVICE_C_SYMBOL);
+    }).not.toThrow();
   });
+
+  test.todo('async declaration');
+  test.todo('check injected values');
 })

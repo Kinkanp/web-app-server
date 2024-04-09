@@ -22,26 +22,10 @@ export class CacheModule extends AppModule<{ [CACHE_SERVICE]: ICacheService }> {
 
         await client.connect()
           .then(() => logger.info('Creating memory storage connection'))
-          .catch((e) => logger.error('Unable to create memory storage connection', e))
+          .catch((e) => logger.error('Unable to create memory storage connection', e));
 
         return client;
       }
     }
   ];
 }
-
-// export async function cacheble<T>(key: string, data: () => Promise<T>): Promise<T>
-// export async function cacheble<T>(key: string, data: T): Promise<T> {
-//   const cached = await memoryStorageClient.get(key);
-//
-//   if (cached) {
-//     return JSON.parse(cached) as T;
-//   }
-//
-//   const dataToSave = await typeof data === 'function' ? data : data;
-//   const serialized = JSON.stringify(dataToSave)
-//
-//   memoryStorageClient.set(key, serialized);
-//
-//   return dataToSave;
-// }

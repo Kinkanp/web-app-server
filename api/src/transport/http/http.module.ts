@@ -4,7 +4,7 @@ import { ConfigModule } from '../../common/config';
 import { LoggerModule } from '../../common/logger';
 import { AppHttpServer } from './app-http-server';
 import { CacheModule } from '../../common/caching';
-import { HttpCacheInterceptor } from './http-cache.interceptor';
+import { HttpCacheInterceptor } from './http-cache-interceptor';
 
 export const HTTP_SERVER = Symbol('App http server');
 export const HTTP_EXCEPTION_HANDLER = Symbol('Http exception handler');

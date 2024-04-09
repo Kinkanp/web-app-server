@@ -1,6 +1,8 @@
 import * as http from 'http';
 import { RequestContext } from '../request-context/request-context';
 import { RouteHandlerResponse } from '../routing';
+import { HttpInterceptorHandle } from './interceptor-handle';
+import { RouteOptions } from '../routing/routing.model';
 
 export interface HttpServerConfig {
   port: number;
@@ -21,13 +23,14 @@ export abstract class ExceptionHandler {
 }
 
 export abstract class HttpInterceptor {
-  abstract intercept(params: HttpInterceptorParams): Promise<RouteHandlerResponse>;
+  abstract intercept(params: HttpInterceptorParams, handle: HttpInterceptorHandle): Promise<RouteHandlerResponse>;
 }
 
 export interface HttpInterceptorParams<T = any> {
   res: HttpResponse;
   req: HttpRequest;
   context: RequestContext<T>;
+  routeOptions?: RouteOptions;
 }
 
 interface ExceptionHandlerError {

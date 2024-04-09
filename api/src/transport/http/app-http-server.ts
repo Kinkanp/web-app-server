@@ -1,11 +1,15 @@
 import * as http from 'http';
-import { inject, injectable } from 'inversify';
+import { inject, injectable, LazyServiceIdentifer } from 'inversify';
 import { IAppLogger, LOGGER } from '../../common/logger';
-import { HttpInterceptor, HttpServer, HttpServerConfig, Routes } from '@packages/http-server';
+import {
+  HttpServer,
+  HttpServerConfig,
+  Routes
+} from '@packages/http-server';
 import { APP_CONFIG, AppConfig } from '../../common/config';
-import { CACHE_SERVICE, ICacheService } from '../../common/caching';
 import { AppHttpExceptionHandler } from './http-exception-handler';
-import { HttpCacheInterceptor } from './http-cache.interceptor';
+import { HTTP_EXCEPTION_HANDLER } from './http.module';
+import { HttpCacheInterceptor } from './http-cache-interceptor';
 
 @injectable()
 export class AppHttpServer {
@@ -14,9 +18,8 @@ export class AppHttpServer {
   constructor(
     @inject(APP_CONFIG) private config: AppConfig,
     @inject(LOGGER) private logger: IAppLogger,
-    @inject(CACHE_SERVICE) private cachingService: ICacheService,
-    @inject(AppHttpExceptionHandler) private exceptionHandler: AppHttpExceptionHandler,
-    @inject(HttpCacheInterceptor) private cachingInterceptor: HttpCacheInterceptor,
+    @inject(HttpCacheInterceptor) private httpCacheInterceptor: HttpCacheInterceptor,
+    @inject(new LazyServiceIdentifer(() => HTTP_EXCEPTION_HANDLER)) private exceptionHandler: AppHttpExceptionHandler,
   ) {
   }
 
@@ -32,7 +35,7 @@ export class AppHttpServer {
       .setLogger(this.logger)
       .setRoutes(routes)
       .setExceptionHandler(this.exceptionHandler)
-      .setRequestInterceptor(this.cachingInterceptor as HttpInterceptor)
+      .setRequestInterceptor(this.httpCacheInterceptor)
       .create()
       .listen();
 

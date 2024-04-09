@@ -1,6 +1,6 @@
 import { AppModule, injectModule } from '@packages/ioc';
 import { AUTH_SERVICE, AuthModule } from '../../../../aggregation/auth';
-import { AuthGuard, AuthGuardHelper } from '../../index';
+import { AuthGuard, AuthGuardHelper } from './auth.guard';
 
 export const AUTH_GUARD = Symbol('auth guard');
 export const AUTH_GUARD_HELPER = Symbol('auth guard helper');

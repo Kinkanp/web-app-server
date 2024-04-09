@@ -12,7 +12,8 @@
     "experimentalDecorators": true,
     "paths": {
       "@packages/*": ["packages/*/index.ts"]
-    }
+    },
+    "sourceMap": true
   },
   "include": ["src", "src/main.ts"],
   "exclude": ["node_modules", "**/*.spec.ts"],

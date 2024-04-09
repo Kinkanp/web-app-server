@@ -8,7 +8,7 @@ export class UserRepository {
   constructor(@inject(DB_CONNECTION) private connection: DBConnection) {
   }
 
-  public async list(): Promise<User[]> {
+  public list(): Promise<User[]> {
     return this.connection.userModel.findMany({
       orderBy: { createdAt: 'desc' }
     });
@@ -19,7 +19,7 @@ export class UserRepository {
   }
 
   public findOne(params: Partial<Pick<User, 'id' | 'username'>>): Promise<User | null> {
-    return this.connection.userModel.findUnique({
+    return this.connection.userModel.findFirst({
       where: params
     });
   }

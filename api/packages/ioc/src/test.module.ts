@@ -11,7 +11,9 @@ interface RegisterModuleFnResult {
   declare?: AppModuleDeclare;
 }
 
-export const createTestingModule = (register: RegisterModuleFn): AppModule => {
+// TODO: make it sync
+export const createTestingModule: (register: RegisterModuleFn) => Promise<AppModule> = async (register) => {
+
   @injectable()
   class TestModule extends AppModule {
     public async register() {
@@ -20,11 +22,12 @@ export const createTestingModule = (register: RegisterModuleFn): AppModule => {
       this.exports = result?.exports || [];
       this.imports = result?.imports || [];
       this.declares = result?.declare || [];
-      super.register();
+
+      return super.register();
     }
   }
 
-  registerModules([TestModule]);
+  await registerModules([TestModule]);
 
   return injectModule(TestModule);
 };
