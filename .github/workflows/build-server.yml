@@ -37,7 +37,7 @@ jobs:
       - name: Create .env file
         uses: SpicyPizza/create-envfile@v1.3
         with:
-          file_name: api/.env
+          file_name: ./.env
           envkey_DB_NAME: ${{ secrets.DB_NAME }}
           envkey_DB_USER: ${{ secrets.DB_USER }}
           envkey_DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
@@ -51,6 +51,6 @@ jobs:
 #      - name: Run docker images
 #        run: docker-compose up -d
       - name: Test
-        run: docker compose run server npm test
+        run: docker compose -f docker-compose.production.yml run --rm server npm test
       - name: Test:e2e
-        run: docker compose run server npm run test:e2e
+        run: docker compose -f docker-compose.production.yml run --rm server npm run test:e2e

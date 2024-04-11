@@ -3,8 +3,7 @@ version: '3.9'
 services:
   server:
     container_name: server_dev
-    command: npm run start:debug
-#    command: npm run start
+    command: npm run start
     build:
       context: .
       dockerfile: ./docker/api/Dockerfile

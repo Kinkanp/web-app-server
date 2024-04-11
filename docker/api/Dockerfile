@@ -23,11 +23,10 @@ ENV NODE_ENV=${NODE_ENV}
 RUN npm ci --production
 
 COPY --from=development /usr/src/app/dist ./dist
+COPY --from=development /usr/src/app/node_modules/.prisma/client ./node_modules/.prisma/client
 COPY ./bin/setup-db.sh .
 
-RUN chmod +x setup-db.sh
-RUN echo "hello"
-RUN ls
+ENTRYPOINT ["./setup-db.sh"]
 CMD ["node", "dist/main.js"]
 #FROM development as production
 #
