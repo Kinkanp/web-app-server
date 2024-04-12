@@ -3,14 +3,13 @@ version: '3.9'
 services:
   server:
     image: kinkan1/web-app-server
+    entrypoint: ["./setup-db.sh"]
+    command: ["node", "dist/main.js"]
     container_name: server
     build:
       context: .
       dockerfile: ./docker/api/Dockerfile
       target: production
-    ports:
-      - "8085:8085"
-      - "9229:9229"
     networks:
       - server
       - client
@@ -23,6 +22,7 @@ services:
     environment:
       DB_URL: $DB_URL
       MEMORY_STORAGE_URL: $MEMORY_STORAGE_URL
+      MEMORY_STORAGE_TTL_IN_SECONDS: $MEMORY_STORAGE_TTL_IN_SECONDS
       APP_PORT: $APP_PORT
       APP_BASE_URL: $APP_BASE_URL
       APP_LOGS_PATH: $APP_LOGS_PATH
@@ -35,9 +35,13 @@ services:
       service: db
 
   redis:
-    extends:
-      file: ./docker-compose.yml
-      service: redis
+    container_name: redis
+    image: redis:7.0.7
+    command: redis-server --save "60 1"
+    volumes:
+      - ./.data/redis:/data
+    networks:
+      - server
 
   client:
     extends:

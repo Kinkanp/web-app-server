@@ -21,6 +21,7 @@ services:
     environment:
       DB_URL: $DB_URL
       MEMORY_STORAGE_URL: $MEMORY_STORAGE_URL
+      MEMORY_STORAGE_TTL_IN_SECONDS: $MEMORY_STORAGE_TTL_IN_SECONDS
       APP_PORT: $APP_PORT
       APP_BASE_URL: $APP_BASE_URL
       APP_LOGS_PATH: $APP_LOGS_PATH
@@ -28,7 +29,6 @@ services:
       JWT_EXPIRES_IN: $JWT_EXPIRES_IN
     ports:
       - "8085:8085"
-      - "9229:9229"
     tty: true
 
   client:
@@ -62,7 +62,6 @@ services:
     ports:
       - "5432:5432"
 
-  # TODO: do not expose ports to the host, should be available only for server!
   redis:
     container_name: redis
     image: redis:7.0.7

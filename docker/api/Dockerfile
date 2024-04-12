@@ -13,7 +13,7 @@ EXPOSE 8085
 RUN npm i @packages/http-server @packages/ioc @packages/logger
 RUN npm run models:generate
 RUN npm run build
-#CMD ["npm", "run", "build"]
+CMD ["npm", "run", "start"]
 
 FROM development as production
 
@@ -26,29 +26,7 @@ COPY --from=development /usr/src/app/dist ./dist
 COPY --from=development /usr/src/app/node_modules/.prisma/client ./node_modules/.prisma/client
 COPY ./bin/setup-db.sh .
 
-ENTRYPOINT ["./setup-db.sh"]
 CMD ["node", "dist/main.js"]
-#FROM development as production
-#
-#WORKDIR /usr/src/app
-#
-#COPY ./api/package*.json ./
-#
-#RUN npm i
-#
-#COPY ./api .
-#COPY ./bin/setup-db.sh .
-#
-#EXPOSE 8085
-#
-#ARG NODE_ENV=production
-#ENV NODE_ENV=${NODE_ENV}
-#
-#RUN npm i @packages/http-server @packages/ioc @packages/logger
-#RUN npm run models:generate
-#RUN npm run build
-#
-#CMD ["node", "dist/main.js"]
 
 
 
