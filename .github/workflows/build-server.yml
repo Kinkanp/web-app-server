@@ -43,13 +43,13 @@ jobs:
           envkey_DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           envkey_DB_PORT: ${{ secrets.DB_PORT }}
           envkey_DB_URL: ${{ secrets.DB_URL }}
+          MEMORY_STORAGE_URL: ${{ MEMORY_STORAGE_URL }}
+          MEMORY_STORAGE_TTL_IN_SECONDS: ${{ MEMORY_STORAGE_TTL_IN_SECONDS }}
           envkey_APP_PORT: ${{ secrets.APP_PORT }}
           envkey_APP_BASE_URL: ${{ secrets.APP_BASE_URL }}
           envkey_APP_LOGS_PATH: ${{ secrets.APP_LOGS_PATH }}
           envkey_JWT_SECRET: ${{ secrets.JWT_SECRET }}
           envkey_JWT_EXPIRES_IN: ${{ secrets.JWT_EXPIRES_IN }}
-#      - name: Run docker images
-#        run: docker-compose up -d
       - name: Test
         run: docker compose -f docker-compose.production.yml run --rm server npm test
       - name: Test:e2e
