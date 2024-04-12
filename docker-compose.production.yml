@@ -4,9 +4,46 @@ services:
   server:
     image: kinkan1/web-app-server
     container_name: server
-#    entrypoint: ["sh", "-c", "ls -l"]
-#    entrypoint: ["./setup-db.sh"]
     build:
       context: .
       dockerfile: ./docker/api/Dockerfile
       target: production
+    ports:
+      - "8085:8085"
+      - "9229:9229"
+    networks:
+      - server
+      - client
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - ./api/logs:/usr/src/app/logs
+    restart: unless-stopped
+    environment:
+      DB_URL: $DB_URL
+      MEMORY_STORAGE_URL: $MEMORY_STORAGE_URL
+      APP_PORT: $APP_PORT
+      APP_BASE_URL: $APP_BASE_URL
+      APP_LOGS_PATH: $APP_LOGS_PATH
+      JWT_SECRET: $JWT_SECRET
+      JWT_EXPIRES_IN: $JWT_EXPIRES_IN
+
+  db:
+    extends:
+      file: ./docker-compose.yml
+      service: db
+
+  redis:
+    extends:
+      file: ./docker-compose.yml
+      service: redis
+
+  client:
+    extends:
+      file: ./docker-compose.yml
+      service: client
+
+networks:
+  client:
+  server:

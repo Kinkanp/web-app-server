@@ -4,10 +4,10 @@ export interface AppConfig {
     }
     database: {
         url: string;
-        name: string;
-        user: string;
-        password: string;
-        port: number;
+    },
+    memoryStorage: {
+        url: string,
+        ttlInSeconds: number
     },
     app: {
         port: number;

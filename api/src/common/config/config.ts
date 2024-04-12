@@ -1,15 +1,15 @@
-import { config } from 'dotenv'
+// import { config } from 'dotenv' Not needed ? ENV vars come from docker
 import { AppConfig } from './config.model';
-config();
+import * as process from 'process';
 
 export function getAppConfig(): AppConfig {
   return Object.freeze({
     database: {
-      url: process.env.DB_URL as string,
-      name: process.env.DB_NAME as string,
-      user: process.env.DB_USER as string,
-      password: process.env.DB_PASSWORD as string,
-      port: parseInt(process.env.DB_PORT as string, 10) as number,
+      url: process.env.DB_URL as string
+    },
+    memoryStorage: {
+      url: process.env.MEMORY_STORAGE_URL as string,
+      ttlInSeconds: parseInt(process.env.MEMORY_STORAGE_TTL_IN_SECONDS as string),
     },
     app: {
       port: parseInt(process.env.APP_PORT as string, 10),

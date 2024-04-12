@@ -1,9 +1,10 @@
 import { UserPublic } from '../../aggregation/user';
-import { Controller, RequestContextDefaultValues, Routes } from '@packages/http-server';
+import { Controller, HttpInterceptorParams, RequestContextDefaultValues, Routes } from '@packages/http-server';
 
-export type AppRoutes = Routes<RequestContextValues>;
-export abstract class AppController extends Controller<RequestContextValues> {}
+export type AppRoutes = Routes<HttpContextValues>;
+export type AppHttpInterceptorParams = HttpInterceptorParams<HttpContextValues>;
+export abstract class AppController extends Controller<HttpContextValues> {}
 
-export interface RequestContextValues extends RequestContextDefaultValues {
+export interface HttpContextValues extends RequestContextDefaultValues {
   user: UserPublic;
 }

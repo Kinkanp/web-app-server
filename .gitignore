@@ -1,6 +1,8 @@
 .idea
-/node_modules
+
 .env
+.data
+
 /api/packages/*/dist
 /api/node_modules
 /api/dist

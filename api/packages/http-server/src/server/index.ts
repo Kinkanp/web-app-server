@@ -1,2 +1,10 @@
 export { HttpServer } from './server';
-export { HttpServerConfig, HttpResponse, HttpRequest, ExceptionHandler } from './server.model';
+export {
+  HttpServerConfig,
+  HttpInterceptor,
+  HttpResponse,
+  HttpRequest,
+  ExceptionHandler,
+  HttpInterceptorParams
+} from './server.model';
+export * from './interceptor-handle'

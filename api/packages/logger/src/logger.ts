@@ -6,9 +6,7 @@ export class Logger implements ILogger {
   private options: LoggerOptions;
   private readonly fileLogger: FileLogger | null;
 
-  constructor(
-    config: LoggerOptions
-  ) {
+  constructor(config: LoggerOptions) {
     this.options = {
       debug: config.debug,
       logsPath: config.logsPath,

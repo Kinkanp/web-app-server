@@ -1,18 +1,28 @@
 import * as http from 'http';
-import { HttpServerConfig, HttpRequest, HttpResponse, ExceptionHandler, HttpLogger } from './server.model';
-import { RouteDynamicParams, RouteHandler, Routes } from '../routing/routing.model';
+import {
+  HttpServerConfig,
+  HttpRequest,
+  HttpResponse,
+  ExceptionHandler,
+  HttpLogger,
+  HttpInterceptor,
+  HttpInterceptorParams
+} from './server.model';
+import { RouteHandlerResponse, Routes } from '../routing/routing.model';
 import { HttpRouting } from '../routing/routing';
 import { ClientErrorResponse, InternalErrorResponse, SuccessResponse } from '../responses';
-import { RequestContext } from '../request-context/request-context';
+import { RequestContext, RequestContextDefaultValues } from '../request-context/request-context';
 import { v4 as uuidv4 } from 'uuid';
 import { CommonHttpResponse } from '../responses/common/common-response';
 import { getIpAddressFromRequest } from '../utils/utils';
+import { HttpInterceptorHandle } from './interceptor-handle';
 
 export class HttpServer {
   private server: http.Server;
   private routing: HttpRouting;
   private exceptionHandler: ExceptionHandler;
   private logger?: HttpLogger;
+  private requestInterceptors: HttpInterceptor[] = [];
 
   constructor(private config: HttpServerConfig) {
   }
@@ -22,7 +32,13 @@ export class HttpServer {
   }
 
   public create(): HttpServer {
-    this.server = http.createServer((req, res) => this.handleRequest(req, res));
+    this.server = http.createServer(async (req, res) => {
+      const context = this.createRequestContext(req);
+
+      this.logger?.info(`rid: ${context.get('rid')}, ${req.method} ${req.url}, IP: ${context.get('ip')}, Time: ${new Date().toISOString()}`);
+      await this.handleRequest(req, res, context);
+      this.logger?.info(`rid end: ${context.get('rid')}`);
+    });
     return this;
   }
 
@@ -48,43 +64,41 @@ export class HttpServer {
     return this;
   }
 
-  public setExceptionHandlers(exceptionHandler: ExceptionHandler): this {
+  public setRequestInterceptor(interceptor: HttpInterceptor): this {
+    this.requestInterceptors.push(interceptor);
+    return this;
+  }
+
+  public setExceptionHandler(exceptionHandler: ExceptionHandler): this {
     this.exceptionHandler = exceptionHandler;
     return this;
   }
 
-  private async handleRequest(req: HttpRequest, res: HttpResponse): Promise<void> {
-    const { handler, guards, dynamicParams } = this.routing.match(req);
-    const requestId = uuidv4();
-    const ip = getIpAddressFromRequest(req);
-
-    this.logger?.info(`rid: ${requestId}, Method: ${req.method}, URL: ${req.url}, IP: ${ip},`);
+  private async handleRequest(req: HttpRequest, res: HttpResponse, context: RequestContext): Promise<void> {
+    const { handler, guards, dynamicParams, options } = this.routing.match(req);
 
     if (handler) {
-      const context = new RequestContext({ rid: requestId, ip });
-
       try {
+        const handle = new HttpInterceptorHandle(() => handler({ req, res, params: dynamicParams, context }));
+
         await this.routing.runGuards(guards, { req, res, context });
-        await this.handleRouteResponse(handler, req, res, dynamicParams, context);
+
+        const routeResponse = this.requestInterceptors.length ?
+          this.runInterceptors({ req, context, res, routeOptions: options }, handle) :
+          handle.run();
+
+        await this.handleRouteResponse(res, routeResponse);
       } catch(error) {
         this.handleRouteError(res, error as Error);
       }
     } else {
       this.sendResponse(new ClientErrorResponse(res).status(404).message('Not Found'))
     }
-
-    this.logger?.info(`rid end: ${requestId}`);
   }
 
-  private async handleRouteResponse(
-    handler: RouteHandler,
-    req: HttpRequest,
-    res: HttpResponse,
-    dynamicParams: RouteDynamicParams,
-    context: RequestContext
-  ): Promise<void> {
+  private async handleRouteResponse(res: HttpResponse, routeResponse: Promise<RouteHandlerResponse>): Promise<void> {
     try {
-      const data = await handler({ req, res, params: dynamicParams, context });
+      const data = await routeResponse;
 
       this.sendResponse(new SuccessResponse(res).status(200), data)
     } catch (error) {
@@ -111,5 +125,28 @@ export class HttpServer {
   private sendResponse<T extends number>(response: CommonHttpResponse<T>, data?: unknown): void {
     response.send(data);
     this.logger?.info(`response ${response}`);
+  }
+
+  private async runInterceptors(params: HttpInterceptorParams, handle: HttpInterceptorHandle): Promise<RouteHandlerResponse> {
+    try {
+      let result = await handle.run();
+
+      for (const interceptor of this.requestInterceptors) {
+        const interceptedHandle = new HttpInterceptorHandle(() => Promise.resolve(result));
+        result = await interceptor.intercept(params, interceptedHandle);
+      }
+
+      return result;
+    } catch(error) {
+      this.logger?.error(`request interceptor error: ${error}`);
+      return Promise.reject(error);
+    }
+  }
+
+  private createRequestContext(req: HttpRequest): RequestContext<RequestContextDefaultValues> {
+    const requestId = uuidv4();
+    const ip = getIpAddressFromRequest(req);
+
+    return new RequestContext({ rid: requestId, ip });
   }
 }

@@ -1,11 +1,14 @@
 import { HttpRequest, HttpResponse } from '../server';
 import { RequestContext } from '../request-context/request-context';
 
+export type HttpRequestMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+
 export interface Route<TRequestContext = unknown> {
-  method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE',
+  method: HttpRequestMethod,
   path: string;
   handler: RouteHandler<TRequestContext>;
   guards?: Guard[];
+  options?: RouteOptions;
 }
 
 export type Routes<TRequestContext = unknown> = Route<TRequestContext>[];
@@ -19,6 +22,7 @@ export type RouteDynamicParams = string[];
 export interface MatchRouteResult {
   handler?: RouteHandler;
   guards?: Guard[];
+  options?: RouteOptions;
   dynamicParams: string[];
 }
 
@@ -43,4 +47,8 @@ interface RouteHandlerArgs<TRequestContext = unknown> {
   res: HttpResponse;
   params: RouteDynamicParams;
   context: RequestContext<TRequestContext>;
+}
+
+export interface RouteOptions {
+  cacheKey: string;
 }

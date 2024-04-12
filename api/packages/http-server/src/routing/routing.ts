@@ -9,7 +9,8 @@ export class HttpRouting {
 
   // TODO: add condition for '*' route
   public match(req: HttpRequest): MatchRouteResult {
-    const reqUrlParts = req.url?.split('/');
+    const [urlWithoutQuery] = req.url?.split('?') || [''];
+    const reqUrlParts = urlWithoutQuery.split('/');
     const dynamicParams: string[] = [];
 
     const route = this.routes
@@ -22,6 +23,8 @@ export class HttpRouting {
       }
 
       return pathParts.every((part, i) => {
+        [part] = part.split('?');
+
         if (part === reqUrlParts[i]) {
           return true;
         }
@@ -38,6 +41,7 @@ export class HttpRouting {
     return {
       handler: route?.handler,
       guards: route?.guards,
+      options: route?.options,
       dynamicParams
     };
   }

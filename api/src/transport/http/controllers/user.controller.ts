@@ -5,6 +5,7 @@ import { Validator } from '../../../common/validation';
 import { AUTH_GUARD } from '../guards';
 import { inject, injectable } from 'inversify';
 import { AuthGuard } from '../guards/auth/auth.guard';
+import { CACHE_KEYS } from '../../../common/caching';
 
 interface UserServiceModel {
   list(): Promise<UserPublic[]>;
@@ -24,7 +25,8 @@ export class UserController implements AppController {
       {
         path: '/users',
         method: 'GET',
-        handler: () => this.list()
+        handler: () => this.list(),
+        options: { cacheKey: CACHE_KEYS.USERS }
       },
       {
         path: '/users/current',

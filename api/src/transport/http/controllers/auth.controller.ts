@@ -12,6 +12,7 @@ import { AppController, AppRoutes } from '../http.constants';
 import { inject, injectable } from 'inversify';
 import { AUTH_GUARD } from '../guards';
 import { AuthGuard } from '../guards/auth/auth.guard';
+import { CACHE_KEYS } from '../../../common/caching';
 
 interface AuthServiceModel {
   login(params: LoginParams, ip: string): Promise<LoginResponse>;
@@ -43,7 +44,8 @@ export class AuthController implements AppController {
       {
         path: '/auth/register',
         method: 'POST',
-        handler: ({ req }) => this.register(req)
+        handler: ({ req }) => this.register(req),
+        options: { cacheKey: CACHE_KEYS.USERS }
       },
       {
         path: '/auth/logout',

@@ -3,7 +3,7 @@ import { Guard, GuardParams } from '@packages/http-server';
 import { AUTH_GUARD_HELPER } from '../index';
 import { UnauthorizedError } from '../../../../common/errors';
 import { UserPublic } from '../../../../aggregation/user';
-import { RequestContextValues } from '../../http.constants';
+import { HttpContextValues } from '../../http.constants';
 
 export interface AuthGuardHelper {
   authenticate(accessToken: string): Promise<UserPublic | null>;
@@ -13,7 +13,7 @@ export interface AuthGuardHelper {
 export class AuthGuard implements Guard {
   constructor(@inject(new LazyServiceIdentifer(() => AUTH_GUARD_HELPER)) private helper: AuthGuardHelper) {}
 
-  public async allow({ req, context }: GuardParams<RequestContextValues>): Promise<void> {
+  public async allow({ req, context }: GuardParams<HttpContextValues>): Promise<void> {
     const accessToken = req.headers.authorization;
 
     if (!accessToken) {

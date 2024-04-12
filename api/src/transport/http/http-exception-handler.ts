@@ -13,7 +13,7 @@ import { IAppLogger, LOGGER } from '../../common/logger';
 import { APP_CONFIG, AppConfig } from '../../common/config';
 
 @injectable()
-export class HttpExceptionHandler implements ExceptionHandler {
+export class AppHttpExceptionHandler implements ExceptionHandler {
   constructor(
     @inject(LOGGER) private logger: IAppLogger,
     @inject(APP_CONFIG) private config: AppConfig,

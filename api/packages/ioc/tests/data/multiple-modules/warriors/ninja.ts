@@ -10,10 +10,13 @@ import { SuperPower } from '../superpowers';
 export class NinjaModule extends AppModule {
   protected exports = [TYPES.Warrior];
   protected imports = [WeaponModule, LoggerModule, SuperSpeedModule];
+  protected declares = [
+    { map: TYPES.Warrior, to: Ninja }
+  ];
 
-  public register() {
-    this.bind(TYPES.Warrior).to(Ninja);
-  }
+  // public register() {
+  //   this.bind(TYPES.Warrior).to(Ninja);
+  // }
 }
 
 @injectable()

@@ -15,9 +15,12 @@ export type Declare = DeclareMappedValue | DeclareDirectValue;
 
 export type DeclareDirectValue = ClassConstructor;
 
-export type DeclareMappedValue = { map: symbol; to: DeclareValue };
+export type DeclareMappedValue = (DeclareMappedValueBase & { to: DeclareValue }) |
+  (DeclareMappedValueBase & { toAsync: () => Promise<DeclareValueBase> });
 
-type DeclareValue = string | number | object | ClassConstructor;
+type DeclareMappedValueBase = { map: symbol, to?: DeclareValue, toAsync?: () => Promise<DeclareValueBase> };
+type DeclareValueBase = string | number | object;
+type DeclareValue = DeclareValueBase | ClassConstructor;
 
 export type AppModuleExport = interfaces.ServiceIdentifier[];
 export type AppModuleDeclare = Declare[];

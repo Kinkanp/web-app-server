@@ -13,12 +13,13 @@ import { getGuardModules } from './transport/http/guards';
 import { injectModule, registerModules } from '@packages/ioc';
 import { Routes } from '@packages/http-server';
 import { logErrorToConsole } from '@packages/logger';
+import { CacheModule } from './common/caching';
 
 export class App {
   static {
     try {
-      this.init();
-      this.run();
+      this.init()
+        .then(() => this.run());
     } catch (e) {
       logErrorToConsole('App unhandled exception', e);
       this.shutdown();
@@ -35,8 +36,8 @@ export class App {
     ]);
   }
 
-  private static init(): void {
-    registerModules([
+  private static init(): Promise<void> {
+    return registerModules([
       //Small utils
       CryptoModule,
       UuidModule,
@@ -47,6 +48,7 @@ export class App {
       DatabaseModule,
       HttpModule,
       ControllersModule,
+      CacheModule,
       ...getGuardModules(),
       // Domain
       UserModule,
