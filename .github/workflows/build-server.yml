@@ -43,8 +43,8 @@ jobs:
           envkey_DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           envkey_DB_PORT: ${{ secrets.DB_PORT }}
           envkey_DB_URL: ${{ secrets.DB_URL }}
-          MEMORY_STORAGE_URL: ${{ MEMORY_STORAGE_URL }}
-          MEMORY_STORAGE_TTL_IN_SECONDS: ${{ MEMORY_STORAGE_TTL_IN_SECONDS }}
+          MEMORY_STORAGE_URL: ${{ secrets.MEMORY_STORAGE_URL }}
+          MEMORY_STORAGE_TTL_IN_SECONDS: ${{ secrets.MEMORY_STORAGE_TTL_IN_SECONDS }}
           envkey_APP_PORT: ${{ secrets.APP_PORT }}
           envkey_APP_BASE_URL: ${{ secrets.APP_BASE_URL }}
           envkey_APP_LOGS_PATH: ${{ secrets.APP_LOGS_PATH }}
