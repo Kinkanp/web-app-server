@@ -6,7 +6,7 @@
   "license": "ISC",
   "scripts": {
     "start": "NODE_ENV=development concurrently -r \"npm:tsc:watch\" \"npm:nodemon:watch\"",
-    "start:debug": "NODE_ENV=development concurrently -r \"npm: tsc:watch\" \"npm:inspect\"",
+    "start:debug": "NODE_ENV=development concurrently -r \"npm:tsc:watch\" \"npm:inspect\"",
     "nodemon:watch": "NODE_ENV=development nodemon --delay 0.1 --watch dist --watch packages --exec 'node --enable-source-maps dist/main.js'",
     "tsc:watch": "npx tsc -b --watch --preserveWatchOutput",
     "build": "NODE_ENV=production npx tsc -b tsconfig.build.json",

@@ -6,7 +6,7 @@ export class HealthController implements AppController {
   public getRoutes(): AppRoutes {
     return [
       {
-        path: '/health',
+        path: 'health',
         method: 'GET',
         handler: async () => ({ status: 'Ok' })
       }

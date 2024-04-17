@@ -25,35 +25,36 @@ export class PostController implements AppController {
   public getRoutes(): AppRoutes {
     return [
       {
-        path: '/posts',
-        method: 'GET',
+        path: 'posts',
         guards: [this.authGuard],
-        handler: ({ context }) => this.list(context.get('user'))
+        children: [
+          {
+            path: '',
+            method: 'GET',
+            handler: ({ context }) => this.list(context.get('user'))
+          },
+          {
+            path: '',
+            method: 'POST',
+            handler: ({ req, context }) => this.create(req, context.get('user'))
+          },
+          {
+            path: ':id',
+            method: 'PATCH',
+            handler: ({ req, params, context }) => this.update(req, params[0], context.get('user'))
+          },
+          {
+            path: ':id',
+            method: 'GET',
+            handler: ({ params, context }) => this.one(params[0], context.get('user'))
+          },
+          {
+            path: ':id',
+            method: 'DELETE',
+            handler: ({ params, context }) => this.delete(params[0], context.get('user'))
+          }
+        ]
       },
-      {
-        path: '/posts',
-        method: 'POST',
-        guards: [this.authGuard],
-        handler: ({ req, context }) => this.create(req, context.get('user'))
-      },
-      {
-        path: '/posts/:id',
-        method: 'PATCH',
-        guards: [this.authGuard],
-        handler: ({ req, params, context }) => this.update(req, params[0], context.get('user'))
-      },
-      {
-        path: '/posts/:id',
-        method: 'GET',
-        guards: [this.authGuard],
-        handler: ({ params, context }) => this.one(params[0], context.get('user'))
-      },
-      {
-        path: '/posts/:id',
-        method: 'DELETE',
-        guards: [this.authGuard],
-        handler: ({ params, context }) => this.delete(params[0], context.get('user'))
-      }
     ]
   }
 

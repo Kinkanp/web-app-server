@@ -23,19 +23,19 @@ export class UserController implements AppController {
   public getRoutes(): AppRoutes {
     return [
       {
-        path: '/users',
+        path: 'users',
         method: 'GET',
         handler: () => this.list(),
         options: { cacheKey: CACHE_KEYS.USERS }
       },
       {
-        path: '/users/current',
+        path: 'users/current',
         method: 'GET',
         guards: [this.authGuard],
         handler: ({ context }) => this.current(context.get('user'))
       },
       {
-        path: '/users/:id',
+        path: 'users/:id',
         method: 'GET',
         handler: ({ req, res, params }) => this.one(req, res, params[0])
       },
