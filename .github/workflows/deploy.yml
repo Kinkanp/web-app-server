@@ -118,6 +118,7 @@ jobs:
 
       - name: Restart app
         run: |
+          scp docker-compose.yml ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.DHUB_IMAGE }}/ &&
           scp docker-compose.production.yml ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.DHUB_IMAGE }}/ &&
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
           cd ${{ secrets.DHUB_IMAGE }}
