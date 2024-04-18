@@ -32,27 +32,32 @@ export class AuthController implements AppController {
   public getRoutes(): AppRoutes {
     return [
       {
-        path: '/auth/login',
-        method: 'POST',
-        handler: ({ req, context }) => this.login(req, context.get('ip'))
+        path: 'auth',
+        children: [
+          {
+            path: 'login',
+            method: 'POST',
+            handler: ({ req, context }) => this.login(req, context.get('ip'))
+          },
+          {
+            path: 'refresh',
+            method: 'POST',
+            handler: ({ req, context }) => this.refresh(req, context.get('ip'))
+          },
+          {
+            path: 'register',
+            method: 'POST',
+            handler: ({ req }) => this.register(req),
+            options: { cacheKey: CACHE_KEYS.USERS }
+          },
+          {
+            path: 'logout',
+            method: 'POST',
+            guards: [this.authGuard],
+            handler: ({ context }) => this.logout(context.get('user'))
+          }
+        ]
       },
-      {
-        path: '/auth/refresh',
-        method: 'POST',
-        handler: ({ req, context }) => this.refresh(req, context.get('ip'))
-      },
-      {
-        path: '/auth/register',
-        method: 'POST',
-        handler: ({ req }) => this.register(req),
-        options: { cacheKey: CACHE_KEYS.USERS }
-      },
-      {
-        path: '/auth/logout',
-        method: 'POST',
-        guards: [this.authGuard],
-        handler: ({ context }) => this.logout(context.get('user'))
-      }
     ];
   }
 

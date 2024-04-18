@@ -3,12 +3,24 @@ import { RequestContext } from '../request-context/request-context';
 
 export type HttpRequestMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
-export interface Route<TRequestContext = unknown> {
-  method: HttpRequestMethod,
+export type Route<TRequestContext = unknown> = RouteDefault<TRequestContext> | RouteWithChildren<TRequestContext>;
+
+interface RouteDefault<TRequestContext> {
   path: string;
+  method: HttpRequestMethod,
   handler: RouteHandler<TRequestContext>;
   guards?: Guard[];
   options?: RouteOptions;
+  children?: Routes<TRequestContext>;
+}
+
+interface RouteWithChildren<TRequestContext> {
+  path: string;
+  method?: HttpRequestMethod,
+  handler?: RouteHandler<TRequestContext>;
+  guards?: Guard[];
+  options?: RouteOptions;
+  children?: Routes<TRequestContext>;
 }
 
 export type Routes<TRequestContext = unknown> = Route<TRequestContext>[];

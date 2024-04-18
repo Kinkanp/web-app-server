@@ -138,7 +138,6 @@ export class HttpServer {
 
       return result;
     } catch(error) {
-      this.logger?.error(`request interceptor error: ${error}`);
       return Promise.reject(error);
     }
   }
