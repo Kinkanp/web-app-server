@@ -125,17 +125,5 @@ jobs:
           docker pull ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_IMAGE }}:latest
           docker pull ${{ secrets.DHUB_USER }}/${{ secrets.DHUB_CLIENT_IMAGE }}:latest
           
-          DB_NAME='${{ secrets.DB_NAME }}'
-          DB_USER='${{ secrets.DB_USER }}'
-          DB_PASSWORD='${{ secrets.DB_PASSWORD }}'
-          DB_PORT='${{ secrets.DB_PORT }}'
-          DB_URL='${{ secrets.DB_URL }}'
-          MEMORY_STORAGE_URL='${{ secrets.MEMORY_STORAGE_URL }}'
-          MEMORY_STORAGE_TTL_IN_SECONDS='${{ secrets.MEMORY_STORAGE_TTL_IN_SECONDS }}'
-          APP_PORT='${{ secrets.APP_PORT }}'
-          APP_BASE_URL='${{ secrets.APP_BASE_URL }}'
-          APP_LOGS_PATH='${{ secrets.APP_LOGS_PATH }}'
-          JWT_SECRET='${{ secrets.JWT_SECRET }}'
-          JWT_EXPIRES_IN='${{ secrets.JWT_EXPIRES_IN }}'
-          docker compose -f docker-compose.production.yml up -d  --force-recreate
+          DB_NAME='${{ secrets.DB_NAME }}' DB_USER='${{ secrets.DB_USER }}' DB_PASSWORD='${{ secrets.DB_PASSWORD }}' DB_PORT='${{ secrets.DB_PORT }}' DB_URL='postgresql://${{ secrets.DB_USER }}:${{ secrets.DB_PASSWORD }}@db:${{ secrets.DB_PORT }}/${{ secrets.DB_NAME }}' MEMORY_STORAGE_URL='${{ secrets.MEMORY_STORAGE_URL }}' MEMORY_STORAGE_TTL_IN_SECONDS='${{ secrets.MEMORY_STORAGE_TTL_IN_SECONDS }}' APP_PORT='${{ secrets.APP_PORT }}' APP_BASE_URL='${{ secrets.APP_BASE_URL }}' APP_LOGS_PATH='${{ secrets.APP_LOGS_PATH }}' JWT_SECRET='${{ secrets.JWT_SECRET }}' JWT_EXPIRES_IN='${{ secrets.JWT_EXPIRES_IN }}' docker compose -f docker-compose.production.yml up -d  --force-recreate
           "
