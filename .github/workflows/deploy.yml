@@ -137,5 +137,5 @@ jobs:
           APP_LOGS_PATH='${{ secrets.APP_LOGS_PATH }}'
           JWT_SECRET='${{ secrets.JWT_SECRET }}'
           JWT_EXPIRES_IN='${{ secrets.JWT_EXPIRES_IN }}'
-          docker compose -f docker-compose.production.yml up-d  --force-recreate
+          docker compose -f docker-compose.production.yml up -d  --force-recreate
           "
