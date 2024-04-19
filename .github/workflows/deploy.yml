@@ -82,6 +82,7 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
+    environment: test
     needs: [ publish_client, publish_server ]
     continue-on-error: true
     steps:
