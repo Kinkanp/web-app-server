@@ -8,7 +8,7 @@ export class HealthController implements AppController {
       {
         path: 'health',
         method: 'GET',
-        handler: async () => ({ status: 'Ok' })
+        handler: async () => ({ status: 'Healthy' })
       }
     ];
   }
