@@ -15,11 +15,11 @@ export class HttpCacheInterceptor implements HttpInterceptor {
   }
 
   async intercept({ req, routeOptions }: HttpInterceptorParams, handle: HttpInterceptorHandle): Promise<RouteHandlerResponse> {
-    if (!routeOptions?.cacheKey) {
+    if (!routeOptions?.routeId) {
       return handle.run();
     }
 
-    const key = routeOptions.cacheKey;
+    const key = routeOptions.routeId;
 
     if (req.method !== 'GET') {
       return handle.run()

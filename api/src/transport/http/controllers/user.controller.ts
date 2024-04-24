@@ -26,7 +26,7 @@ export class UserController implements AppController {
         path: 'users',
         method: 'GET',
         handler: () => this.list(),
-        options: { cacheKey: CACHE_KEYS.USERS }
+        options: { routeId: CACHE_KEYS.USERS }
       },
       {
         path: 'users/current',
