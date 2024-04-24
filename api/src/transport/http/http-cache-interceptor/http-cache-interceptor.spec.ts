@@ -46,7 +46,7 @@ describe('HttpCacheInterceptor', () => {
     const interceptor = await createInterceptor(cacheService);
     const params = {
       req: { method: 'GET' },
-      routeOptions: { cacheKey: null }
+      routeOptions: { routeId: null }
     } as HttpInterceptorParams;
 
     const result = await interceptor.intercept(params, handle);
@@ -62,7 +62,7 @@ describe('HttpCacheInterceptor', () => {
     const interceptor = await createInterceptor(cacheService);
     const params = {
       req: { method: 'POST' },
-      routeOptions: { cacheKey: 'CACHE_KEY' }
+      routeOptions: { routeId: 'CACHE_KEY' }
     } as HttpInterceptorParams;
 
     const result = await interceptor.intercept(params, handle);
@@ -70,7 +70,7 @@ describe('HttpCacheInterceptor', () => {
     expect(handleRun).toHaveBeenCalled();
     expect(cacheService.get).not.toHaveBeenCalled();
     expect(cacheService.set).not.toHaveBeenCalled();
-    expect(cacheService.delete).toHaveBeenCalledWith(params.routeOptions.cacheKey);
+    expect(cacheService.delete).toHaveBeenCalledWith(params.routeOptions.routeId);
     expect(result).toEqual(handleData)
   });
 
@@ -80,13 +80,13 @@ describe('HttpCacheInterceptor', () => {
     const interceptor = await createInterceptor(cacheService);
     const params = {
       req: { method: 'GET' },
-      routeOptions: { cacheKey: 'CACHE_KEY' }
+      routeOptions: { routeId: 'CACHE_KEY' }
     } as HttpInterceptorParams;
 
     const result = await interceptor.intercept(params, handle);
 
     expect(handleRun).not.toHaveBeenCalled();
-    expect(cacheService.get).toHaveBeenCalledWith(params.routeOptions.cacheKey);
+    expect(cacheService.get).toHaveBeenCalledWith(params.routeOptions.routeId);
     expect(cacheService.set).not.toHaveBeenCalled();
     expect(cacheService.delete).not.toHaveBeenCalled();
     expect(result).toEqual(data);
@@ -96,15 +96,15 @@ describe('HttpCacheInterceptor', () => {
     const interceptor = await createInterceptor(cacheService);
     const params = {
       req: { method: 'GET' },
-      routeOptions: { cacheKey: 'CACHE_KEY' }
+      routeOptions: { routeId: 'CACHE_KEY' }
     } as HttpInterceptorParams;
 
     const result = await interceptor.intercept(params, handle);
 
     expect(handleRun).toHaveBeenCalled();
-    expect(cacheService.get).toHaveBeenCalledWith(params.routeOptions.cacheKey);
+    expect(cacheService.get).toHaveBeenCalledWith(params.routeOptions.routeId);
     expect(cacheService.set).toHaveBeenCalledWith(
-      params.routeOptions.cacheKey,
+      params.routeOptions.routeId,
       handleData,
       { ttlInSeconds: appConfig.memoryStorage.ttlInSeconds }
     );

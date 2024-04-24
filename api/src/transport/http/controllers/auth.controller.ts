@@ -48,7 +48,7 @@ export class AuthController implements AppController {
             path: 'register',
             method: 'POST',
             handler: ({ req }) => this.register(req),
-            options: { cacheKey: CACHE_KEYS.USERS }
+            options: { routeId: CACHE_KEYS.USERS }
           },
           {
             path: 'logout',

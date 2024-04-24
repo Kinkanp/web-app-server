@@ -62,5 +62,5 @@ interface RouteHandlerArgs<TRequestContext = unknown> {
 }
 
 export interface RouteOptions {
-  cacheKey: string;
+  routeId: string;
 }
