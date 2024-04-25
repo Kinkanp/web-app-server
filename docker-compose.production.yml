@@ -50,9 +50,15 @@ services:
       - server
 
   client:
-    extends:
-      file: ./docker-compose.yml
-      service: client
+    image: kinkan1/web-app-client
+    container_name: client
+    depends_on:
+      - server
+    networks:
+      - client
+    ports:
+      - "80:80"
+      - "443:443"
 
 networks:
   client:
