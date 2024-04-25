@@ -6,10 +6,6 @@ services:
     entrypoint: ["./setup-db.sh"]
     command: ["node", "dist/main.js"]
     container_name: server
-    build:
-      context: .
-      dockerfile: ./docker/api/Dockerfile
-      target: production
     networks:
       - server
       - client
